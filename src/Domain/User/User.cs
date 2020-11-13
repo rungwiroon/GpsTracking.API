@@ -21,6 +21,6 @@ namespace Domain.User
 
         public string Email { get; }
 
-        public string Description { get; }
+        public string? Description { get; }
     }
 }

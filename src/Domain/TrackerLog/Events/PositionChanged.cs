@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.DeviceEvents
+namespace Domain.TrackerLog.Events
 {
     public class PositionEvent : DeviceEvent
     {

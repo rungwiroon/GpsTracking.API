@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.Tracker.Events
+namespace Domain.TrackerLog.Events
 {
     public class DigitalSensorEvent : DeviceEvent
     {
