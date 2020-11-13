@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Domain
 {
-    public class DeviceEvent
+    public abstract class DeviceEvent
     {
         public DeviceId DeviceId { get; }
         public DateTimeOffset TimeStamp { get; }

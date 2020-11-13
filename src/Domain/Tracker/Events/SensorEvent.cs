@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.DeviceEvents
+namespace Domain.Tracker.Events
 {
-    class DigitalSensorEvent : DeviceEvent
+    public class DigitalSensorEvent : DeviceEvent
     {
         public SensorData<bool> Value { get; }
     }
 
-    class AnalogSensorEvent : DeviceEvent
+    public class AnalogSensorEvent : DeviceEvent
     {
         public SensorData<float> Value { get; }
     }

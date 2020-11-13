@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Domain.Driver
 {
-    class Driver
+    public class Driver
     {
     }
 }

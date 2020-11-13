@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Domain.Poi
 {
-    class PoiType
+    public class PoiType
     {
     }
 }
