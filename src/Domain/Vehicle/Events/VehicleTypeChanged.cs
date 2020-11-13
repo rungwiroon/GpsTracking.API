@@ -5,7 +5,7 @@ using System.Text;
 namespace Domain.Vehicle.Events
 {
     [Serializable]
-    public class VehicleTypeChanged
+    public class VehicleTypeChanged : IEvent
     {
         public VehicleId VehicleId { get; }
         public VehicleTypeId OldTypeId { get; }

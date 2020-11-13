@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.User
 {
+    [Serializable]
     public record UserGroupId : EntityId
     {
         public UserGroupId() : base() { }
@@ -12,7 +12,7 @@ namespace Domain.User
     }
 
     [Serializable]
-    public class UserGroup
+    public record UserGroup
     {
         public UserGroupId Id { get; }
 
@@ -22,18 +22,18 @@ namespace Domain.User
 
         public string? Description { get; }
 
-        private static UserGroup defaultGroup = new (
+        private static readonly UserGroup defaultGroup = new (
             new UserGroupId(Guid.Empty), "Default", "Default user group");
         public static UserGroup Default => defaultGroup;
 
-        public UserGroup(string name, string description = null)
+        public UserGroup(string name, string? description = null)
         {
             Id = new UserGroupId();
             Name = name;
-            description = description;
+            Description = description;
         }
 
-        public UserGroup(UserGroupId id, string name, string description = null)
+        public UserGroup(UserGroupId id, string name, string? description = null)
         {
             Id = id;
             Name = name;
@@ -50,7 +50,12 @@ namespace Domain.User
             throw new NotImplementedException();
         }
 
-        public void SetParent(UserGroup parent)
+        public void AddUser(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveUser(UserId user)
         {
             throw new NotImplementedException();
         }

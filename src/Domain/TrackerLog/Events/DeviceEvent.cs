@@ -7,7 +7,7 @@ namespace Domain.TrackerLog.Events
 {
     public abstract class DeviceEvent
     {
-        public DeviceId DeviceId { get; }
+        public TrackerId DeviceId { get; }
         public DateTimeOffset TimeStamp { get; }
     }
 }

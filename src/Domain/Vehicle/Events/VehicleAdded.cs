@@ -21,7 +21,7 @@ namespace Domain.Vehicle.Events
             VehicleId = vehicleId;
             LicensePlateId = licensePlateId;
             Name = name;
-            vehicleTypeId = vehicleTypeId;
+            VehicleTypeId = vehicleTypeId;
         }
     }
 }

@@ -12,6 +12,12 @@ namespace Domain.Vehicle
         public VehicleId(Guid id) : base(id) { }
     }
 
+    public class VehicleInfo
+    {
+        public string? Brand { get; }
+        public string? Model { get; }
+    }
+
     public class Vehicle
     {
         public VehicleId Id { get; }
@@ -20,32 +26,42 @@ namespace Domain.Vehicle
 
         public string? Name { get; }
 
+        public VehicleInfo Info { get; }
+
         public VehicleType Type { get; }
         public VehicleGroup? Group { get; }
 
         public UserGroupId UserGroupId { get; }
 
-        private DeviceId[] deviceIds;
-        public IReadOnlyCollection<DeviceId> Devices => deviceIds;
+        private readonly List<TrackerId> deviceIds = new();
+        public IReadOnlyCollection<TrackerId> Devices => deviceIds;
 
         public DateTimeOffset CreatedAt { get; }
 
+#pragma warning disable CS8618
         private Vehicle() { }
+#pragma warning restore CS8618
 
-        public Vehicle(string licensePlateId, UserGroupId userGroupId, VehicleType? vehicleType = null, string? name = null)
+        public Vehicle(
+            string licensePlateId, UserGroupId userGroupId, 
+            VehicleType? vehicleType = null, string? name = null)
         {
+            Id = new();
+
             LicensePlateId = licensePlateId;
             Type = vehicleType ?? VehicleType.Default;
             Name = name;
             UserGroupId = userGroupId;
+
+            CreatedAt = DateTimeOffset.UtcNow;
         }
 
-        public void AddDevice(DeviceId deviceId)
+        public void AttachDevice(TrackerId deviceId)
         {
             throw new NotImplementedException();
         }
 
-        public void RemoveDevice(DeviceId deviceId)
+        public void RemoveDevice(TrackerId deviceId)
         {
             throw new NotImplementedException();
         }

@@ -6,15 +6,14 @@ namespace Domain.DeviceOpions
 {
     public class DeviceOption
     {
-        public DeviceSensorOption[] SensorOptionHistories { get; }
+        public SensorOption[] SensorOptionHistories { get; }
+        public Sensor Sensor { get; }
     }
 
-    public abstract class DeviceSensorOption
+    public abstract class SensorOption
     {
         public DateTimeOffset EffectiveAt { get; }
 
         public int Channel { get; }
-
-        public Sensor Sensor { get; }
     }
 }

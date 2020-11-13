@@ -1,11 +1,10 @@
-using Domain.DeviceOpions;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.Tracker
+namespace Domain
 {
-    public abstract class DeviceModule
+    public interface IEvent
     {
         
     }

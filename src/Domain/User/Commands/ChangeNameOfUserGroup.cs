@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Domain.User
 {
-    public class CreateUser : ICommand
+    public class ChangeNameOfUserGroup : ICommand
     {
 
     }

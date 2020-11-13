@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.User
 {
@@ -11,7 +10,8 @@ namespace Domain.User
         public UserRoleId(Guid id) : base(id) { }
     }
 
-    public class UserRole
+    [Serializable]
+    public record UserRole
     {
         public UserRoleId Id { get; }
 
@@ -19,9 +19,9 @@ namespace Domain.User
 
         public string? Description { get; }
 
-        private static UserRole defaultRole = new (
+        private static readonly UserRole defaultRole = new (
             new UserRoleId(Guid.Empty), "Default", "Default user role");
-        public static UserRole Role => defaultRole;
+        public static UserRole Default => defaultRole;
 
         private UserRole(UserRoleId id, string name, string description)
         {

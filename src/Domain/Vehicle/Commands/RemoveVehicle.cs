@@ -7,9 +7,8 @@ using Domain;
 namespace Domain.Vehicle.Commands
 {
     [Serializable]
-    public class ChangeLicensePlateId : ICommand
+    public class RemoveVehicle : ICommand
     {
         public VehicleId VehicleId { get; }
-        public string LicensePlateId { get; }
     }
 }
