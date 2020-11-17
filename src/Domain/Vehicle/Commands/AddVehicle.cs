@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
+using Domain;
 using Domain.User;
+using System;
 
-namespace Domain.Vehicle.Commands
+namespace Core.Domain.Vehicle.Commands
 {
     [Serializable]
     public class AddVehicle : ICommand

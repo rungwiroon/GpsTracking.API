@@ -1,5 +1,4 @@
 ﻿using Domain;
-using Domain.Vehicle;
 using System;
 
 namespace Core.Domain.Vehicle.Commands

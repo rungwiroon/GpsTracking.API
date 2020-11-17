@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Core.Domain.SeedWork;
+using Core.Domain.Vehicle.Events;
 
-namespace Domain.Vehicle
+namespace Core.Domain.Vehicle
 {
     public record VehicleTypeId : EntityId
     {
@@ -11,7 +11,7 @@ namespace Domain.Vehicle
         public VehicleTypeId(Guid id) : base(id) { }
     }
 
-    public class VehicleType
+    public class VehicleType : Entity
     {
         public VehicleTypeId Id { get; }
 
@@ -21,7 +21,7 @@ namespace Domain.Vehicle
 
         public Uri? IconUrl { get; }
 
-        private static VehicleType defaultType = new (
+        private static readonly VehicleType defaultType = new (
             new VehicleTypeId(Guid.Empty), "Default", "Default vehicle type");
         public static VehicleType Default => defaultType;
 
@@ -30,6 +30,8 @@ namespace Domain.Vehicle
             Id = id;
             Name = name;
             Description = description;
+
+            base.AddDomainEvent(new VehicleTypeCreated(Id, Name));
         }
     }
 }

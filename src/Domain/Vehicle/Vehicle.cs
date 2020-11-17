@@ -1,9 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Domain.Tracker;
+﻿using Core.Domain.SeedWork;
+using Core.Domain.Trackers;
+using Core.Domain.Vehicle.Events;
 using Domain.User;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Domain.Vehicle
+namespace Core.Domain.Vehicle
 {
     public record VehicleId : EntityId
     {
@@ -18,23 +21,23 @@ namespace Domain.Vehicle
         public string? Model { get; }
     }
 
-    public class Vehicle
+    public class Vehicle : Entity, IAggregateRoot
     {
         public VehicleId Id { get; }
 
-        public string LicensePlateId { get; }
+        public string LicensePlateId { get; private set; }
 
-        public string? Name { get; }
+        public string? Name { get; private set; }
 
-        public VehicleInfo Info { get; }
+        public VehicleInfo? Info { get; }
 
-        public VehicleType Type { get; }
+        public VehicleType Type { get; private set; }
         public VehicleGroup? Group { get; }
 
-        public UserGroupId UserGroupId { get; }
+        public UserGroupId UserGroupId { get; private set; }
 
-        private readonly List<TrackerId> deviceIds = new();
-        public IReadOnlyCollection<TrackerId> Devices => deviceIds;
+        private readonly List<TrackerId> trackers = new();
+        public IReadOnlyCollection<TrackerId> Trackers => trackers;
 
         public DateTimeOffset CreatedAt { get; }
 
@@ -56,34 +59,55 @@ namespace Domain.Vehicle
             CreatedAt = DateTimeOffset.UtcNow;
         }
 
-        public void AttachDevice(TrackerId deviceId)
+        public void InstallTracker(Tracker tracker)
         {
-            throw new NotImplementedException();
+            trackers.Add(tracker.Id);
+
+            base.AddDomainEvent(new TrackerInstalled(Id, tracker.Id, 
+                tracker.SerialNumber, tracker.Info?.Brand, tracker.Info?.Model));
         }
 
-        public void RemoveDevice(TrackerId deviceId)
+        public void RemoveTracker(TrackerId trackerId)
         {
-            throw new NotImplementedException();
+            trackers.Remove(trackers.Single(t => t == trackerId));
+
+            base.AddDomainEvent(new TrackerRemoved(Id, trackerId));
         }
 
-        public void ChangeLicense(string license)
+        public void ChangeLicensePlate(string newLicensePlateId)
         {
-            throw new NotImplementedException();
+            var @event = new VehicleLicensePlateChanged(Id, this.LicensePlateId, newLicensePlateId);
+
+            LicensePlateId = newLicensePlateId;
+
+            base.AddDomainEvent(@event);
         }
 
-        public void ChangeName(string name)
+        public void ChangeName(string newName)
         {
-            throw new NotImplementedException();
+            var @event = new VehicleNameChanged(Id, this.Name, newName);
+
+            Name = newName;
+
+            base.AddDomainEvent(@event);
         }
 
-        public void ChangeVehicleType(VehicleTypeId vehicleTypeId)
+        public void ChangeVehicleType(VehicleType newVehicleType)
         {
-            throw new NotImplementedException();
+            var @event = new VehicleTypeChanged(Id, Type, newVehicleType);
+
+            Type = newVehicleType;
+
+            base.AddDomainEvent(@event);
         }
 
-        public void ChangeUserGroup(UserGroupId userGroupId)
+        public void ChangeUserGroup(UserGroupId newUserGroupId)
         {
-            throw new NotImplementedException();
+            var @event = new VehicleGroupChanged(Id, UserGroupId, newUserGroupId);
+
+            UserGroupId = newUserGroupId;
+
+            AddDomainEvent(@event);
         }
     }
 }

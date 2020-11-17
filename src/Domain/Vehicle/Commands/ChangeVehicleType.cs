@@ -1,15 +1,19 @@
-using System;
-using System.Collections.Generic;
-using Domain.Tracker;
-using Domain.User;
 using Domain;
+using System;
 
-namespace Domain.Vehicle.Commands
+namespace Core.Domain.Vehicle.Commands
 {
     [Serializable]
     public class ChangeVehicleType : ICommand
     {
         public VehicleId VehicleId { get; }
         public VehicleTypeId VehicleTypeId { get; }
+
+        public ChangeVehicleType(
+            VehicleId vehicleId, VehicleTypeId vehicleTypeId)
+        {
+            VehicleId = vehicleId;
+            VehicleTypeId = vehicleTypeId;
+        }
     }
 }

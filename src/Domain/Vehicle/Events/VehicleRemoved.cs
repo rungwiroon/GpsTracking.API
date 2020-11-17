@@ -1,7 +1,5 @@
-﻿using Domain;
-using Domain.Vehicle;
+﻿using Core.Domain.SeedWork;
 using System;
-using System.Collections.Generic;
 
 namespace Core.Domain.Vehicle.Events
 {

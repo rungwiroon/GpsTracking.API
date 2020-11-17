@@ -1,24 +1,23 @@
+using Core.Domain.SeedWork;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Domain.Vehicle.Events
+namespace Core.Domain.Vehicle.Events
 {
     [Serializable]
     public class VehicleTypeChanged : IEvent
     {
         public VehicleId VehicleId { get; }
-        public VehicleTypeId OldTypeId { get; }
-        public VehicleTypeId NewTypeId { get; }
+        public VehicleType OldType { get; }
+        public VehicleType NewType { get; }
 
         public VehicleTypeChanged(
             VehicleId vehicleId,
-            VehicleTypeId oldTypeId,
-            VehicleTypeId newTypeId)
+            VehicleType oldType,
+            VehicleType newType)
         {
             VehicleId = vehicleId;
-            OldTypeId = oldTypeId;
-            NewTypeId = newTypeId;
+            OldType = oldType;
+            NewType = newType;
         }
     }
 }

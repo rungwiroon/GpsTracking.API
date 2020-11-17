@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using Core.Domain.SeedWork;
 
-namespace Domain.Vehicle
+namespace Domain
 {
     public record IconId : EntityId
     {
@@ -17,6 +17,8 @@ namespace Domain.Vehicle
 
         public Uri Url { get; }
 
-        public string Description { get; }
+        public string? Description { get; }
+
+        public static Icon Default { get; }
     }
 }

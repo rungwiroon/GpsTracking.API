@@ -1,7 +1,7 @@
 ﻿using Domain;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using Core.Domain.SeedWork;
 
 namespace Core.Domain.User.Events
 {

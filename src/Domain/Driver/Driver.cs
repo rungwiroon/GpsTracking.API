@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Domain.User;
+using Core.Domain.SeedWork;
 
 namespace Domain.Driver
 {
@@ -22,5 +23,16 @@ namespace Domain.Driver
         public UserGroupId UserGroupId { get; }
 
         public DriverGroup Group { get; }
+
+        public Driver(DriverId id, string firstName, string lastName, string description, 
+            UserGroupId userGroupId, DriverGroup group)
+        {
+            Id = id;
+            FirstName = firstName;
+            LastName = lastName;
+            Description = description;
+            UserGroupId = userGroupId;
+            Group = group;
+        }
     }
 }

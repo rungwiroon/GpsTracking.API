@@ -1,18 +1,17 @@
+using Core.Domain.SeedWork;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Domain.Vehicle.Events
+namespace Core.Domain.Vehicle.Events
 {
     [Serializable]
-    public class VehicleCreated
+    public class VehicleAdded : IEvent
     {
         public VehicleId VehicleId { get; }
         public string LicensePlateId { get; }
         public string? Name { get; }
         public VehicleTypeId VehicleTypeId { get; }
 
-        public VehicleCreated(
+        public VehicleAdded(
             VehicleId vehicleId,
             string licensePlateId,
             string name,

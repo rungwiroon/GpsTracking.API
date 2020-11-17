@@ -1,8 +1,6 @@
 ﻿using Domain;
 using Domain.User;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Core.Domain.Vehicle.Commands
 {
@@ -12,5 +10,12 @@ namespace Core.Domain.Vehicle.Commands
         public UserGroupId UserGroupId { get; }
 
         public string Name { get; }
+
+        public CreateVehicleGroup(
+            UserGroupId userGroupId, string name)
+        {
+            UserGroupId = userGroupId;
+            Name = name;
+        }
     }
 }

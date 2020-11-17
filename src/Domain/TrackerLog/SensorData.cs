@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
-
-namespace Domain.TrackerLog
+﻿namespace Domain.TrackerLog
 {
     public struct SensorData<T>
         where T : struct
@@ -11,5 +6,11 @@ namespace Domain.TrackerLog
         public int Channel { get; }
 
         public T Value { get; }
+
+        public SensorData(int channel, T value)
+        {
+            Channel = channel;
+            Value = value;
+        }
     }
 }

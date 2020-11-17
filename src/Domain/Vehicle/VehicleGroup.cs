@@ -1,8 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Core.Domain.SeedWork;
+using Core.Domain.Vehicle.Events;
 using Domain.User;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Domain.Vehicle
+namespace Core.Domain.Vehicle
 {
     public record VehicleGroupId : EntityId
     {
@@ -11,7 +14,7 @@ namespace Domain.Vehicle
         public VehicleGroupId(Guid id) : base(id) { }
     }
 
-    public class VehicleGroup
+    public class VehicleGroup : Entity
     {
         public VehicleGroupId Id { get; }
 
@@ -20,6 +23,9 @@ namespace Domain.Vehicle
         public string Name { get; }
 
         public string? Description { get; }
+
+        private readonly List<Vehicle> vehicles = new();
+        public IReadOnlyCollection<Vehicle> Vehicles => vehicles.AsReadOnly();
 
 #pragma warning disable CS8618
         private VehicleGroup() { }
@@ -31,26 +37,50 @@ namespace Domain.Vehicle
             Name = name;
             UserGroupId = userGroupId;
             Description = description;
+
+            AddDomainEvent(new VehicleGroupCreated(Id, Name, userGroupId));
         }
 
         public void AddVehicle(Vehicle vehicle)
         {
-            throw new NotImplementedException();
+            if(vehicle == null)
+                throw new ArgumentNullException(nameof(vehicle));
+
+            vehicles.Add(vehicle);
+
+            AddDomainEvent(new VehicleAddedToGroup(
+                Id, Name, vehicle.Id, vehicle.LicensePlateId, vehicle.Name));
         }
 
         public void AddVehicles(IEnumerable<Vehicle> vehicles)
         {
-            throw new NotImplementedException();
+            if(vehicles == null)
+                throw new ArgumentNullException(nameof(vehicles));
+
+            this.vehicles.AddRange(vehicles);
+
+            foreach(var vehicle in vehicles)
+                AddDomainEvent(new VehicleAddedToGroup(
+                    Id, Name, vehicle.Id, vehicle.LicensePlateId, vehicle.Name));
         }
 
         public void RemoveVehicle(VehicleId vehicleId)
         {
-            throw new NotImplementedException();
+            if(vehicleId == null)
+                throw new ArgumentNullException(nameof(vehicleId));
+
+            this.vehicles.Remove(this.vehicles.Single(v => v.Id == vehicleId));
+
+            AddDomainEvent(new VehicleRemovedFromGroup(Id, vehicleId));
         }
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            var vehiclesToRemove = this.Vehicles.ToArray();
+            vehicles.Clear();
+            
+            foreach(var vehicle in vehiclesToRemove)
+                AddDomainEvent(new VehicleRemovedFromGroup(Id, vehicle.Id));
         }
     }
 }
