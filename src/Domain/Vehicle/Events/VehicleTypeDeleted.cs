@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Core.Domain.SeedWork;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Domain.Vehicle.Events
+namespace Core.Domain.Vehicles.Events
 {
-    class VehicleTypeDeleted
+    public class VehicleTypeDeleted : IEvent
     {
     }
 }

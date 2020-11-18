@@ -1,12 +1,12 @@
 ﻿using Core.Domain.SeedWork;
 using Core.Domain.Trackers;
-using Core.Domain.Vehicle.Events;
-using Domain.User;
+using Core.Domain.Vehicles.Events;
+using Core.Domain.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core.Domain.Vehicle
+namespace Core.Domain.Vehicles
 {
     public record VehicleId : EntityId
     {
@@ -34,7 +34,7 @@ namespace Core.Domain.Vehicle
         public VehicleType Type { get; private set; }
         public VehicleGroup? Group { get; }
 
-        public UserGroupId UserGroupId { get; private set; }
+        public AccountId AccountId { get; private set; }
 
         private readonly List<TrackerId> trackers = new();
         public IReadOnlyCollection<TrackerId> Trackers => trackers;
@@ -46,7 +46,7 @@ namespace Core.Domain.Vehicle
 #pragma warning restore CS8618
 
         public Vehicle(
-            string licensePlateId, UserGroupId userGroupId, 
+            string licensePlateId, AccountId accountId, 
             VehicleType? vehicleType = null, string? name = null)
         {
             Id = new();
@@ -54,7 +54,7 @@ namespace Core.Domain.Vehicle
             LicensePlateId = licensePlateId;
             Type = vehicleType ?? VehicleType.Default;
             Name = name;
-            UserGroupId = userGroupId;
+            AccountId = accountId;
 
             CreatedAt = DateTimeOffset.UtcNow;
         }
@@ -101,13 +101,13 @@ namespace Core.Domain.Vehicle
             base.AddDomainEvent(@event);
         }
 
-        public void ChangeUserGroup(UserGroupId newUserGroupId)
-        {
-            var @event = new VehicleGroupChanged(Id, UserGroupId, newUserGroupId);
+        //public void ChangeUserGroup(UserGroupId newUserGroupId)
+        //{
+        //    var @event = new VehicleGroupChanged(Id, AccountId, newUserGroupId);
 
-            UserGroupId = newUserGroupId;
+        //    AccountId = newUserGroupId;
 
-            AddDomainEvent(@event);
-        }
+        //    AddDomainEvent(@event);
+        //}
     }
 }

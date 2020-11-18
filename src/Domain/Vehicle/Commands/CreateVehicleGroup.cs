@@ -1,8 +1,8 @@
 ﻿using Domain;
-using Domain.User;
+using Core.Domain.Identity;
 using System;
 
-namespace Core.Domain.Vehicle.Commands
+namespace Core.Domain.Vehicles.Commands
 {
     [Serializable]
     public class CreateVehicleGroup : ICommand

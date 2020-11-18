@@ -1,11 +1,11 @@
 ﻿using Core.Domain.SeedWork;
-using Core.Domain.Vehicle.Events;
-using Domain.User;
+using Core.Domain.Vehicles.Events;
+using Core.Domain.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core.Domain.Vehicle
+namespace Core.Domain.Vehicles
 {
     public record VehicleGroupId : EntityId
     {

@@ -1,7 +1,7 @@
 ﻿using Core.Domain.SeedWork;
-using Domain.User;
+using Core.Domain.Identity;
 
-namespace Core.Domain.Vehicle.Events
+namespace Core.Domain.Vehicles.Events
 {
     public class VehicleGroupCreated : IEvent
     {

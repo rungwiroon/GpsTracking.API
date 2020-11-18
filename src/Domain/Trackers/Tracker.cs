@@ -1,7 +1,7 @@
 ﻿using Core.Domain.SeedWork;
 using Core.Domain.Trackers.DeviceOpions;
 using Core.Domain.Trackers.Modules;
-using Domain.User;
+using Core.Domain.Identity;
 using System;
 using System.Collections.Generic;
 

@@ -1,5 +1,5 @@
 using Domain;
-using Domain.User;
+using Core.Domain.Identity;
 
 namespace Core.Domain.Trackers.Commands
 {
@@ -11,14 +11,14 @@ namespace Core.Domain.Trackers.Commands
 
         public string? Model { get; }
 
-        public AccountId AccountId { get; }
+        public UserAccountId IssuedBy { get; }
 
         public AddNewTracker(
-            string serialNumber, AccountId accountId,
+            string serialNumber, UserAccountId issuedBy,
             string? brand = null, string? model = null)
         {
             SerialNumber = serialNumber;
-            AccountId = accountId;
+            IssuedBy = issuedBy;
             Brand = brand;
             Model = model;
         }

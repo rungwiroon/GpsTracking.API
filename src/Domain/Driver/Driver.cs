@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Domain.User;
+using Core.Domain.Identity;
 using Core.Domain.SeedWork;
 
 namespace Domain.Driver

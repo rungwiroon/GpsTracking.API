@@ -1,7 +1,7 @@
 ﻿using Core.Domain.SeedWork;
 using System;
 
-namespace Core.Domain.Vehicle.Events
+namespace Core.Domain.Vehicles.Events
 {
     [Serializable]
     public class VehicleInfoChanged : IEvent

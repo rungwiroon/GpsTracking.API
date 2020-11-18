@@ -1,8 +1,8 @@
 ﻿using Core.Domain.SeedWork;
-using Domain.User;
+using Core.Domain.Identity;
 using System;
 
-namespace Core.Domain.Vehicle.Events
+namespace Core.Domain.Vehicles.Events
 {
     [Serializable]
     public class VehicleGroupChanged : IEvent

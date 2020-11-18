@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30709.64
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GpsTracking.API", "GpsTracking.Api\GpsTracking.API.csproj", "{9AA922E7-217A-4C6F-AFFD-023EE5FD8DC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "GpsTracking.Api\API.csproj", "{9AA922E7-217A-4C6F-AFFD-023EE5FD8DC9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Domain", "Domain\Core.Domain.csproj", "{41B1DCC1-8D2D-4690-B21C-C5E6BC1B1E40}"
 EndProject

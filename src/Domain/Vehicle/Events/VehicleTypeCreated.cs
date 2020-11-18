@@ -1,6 +1,6 @@
 ﻿using Core.Domain.SeedWork;
 
-namespace Core.Domain.Vehicle.Events
+namespace Core.Domain.Vehicles.Events
 {
     public class VehicleTypeCreated : IEvent
     {

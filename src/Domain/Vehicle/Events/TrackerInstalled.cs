@@ -2,7 +2,7 @@ using Core.Domain.SeedWork;
 using Core.Domain.Trackers;
 using System;
 
-namespace Core.Domain.Vehicle.Events
+namespace Core.Domain.Vehicles.Events
 {
     [Serializable]
     public class TrackerInstalled : IEvent

@@ -1,8 +1,8 @@
 ﻿using System;
 using Core.Domain.SeedWork;
-using Core.Domain.Vehicle.Events;
+using Core.Domain.Vehicles.Events;
 
-namespace Core.Domain.Vehicle
+namespace Core.Domain.Vehicles
 {
     public record VehicleTypeId : EntityId
     {

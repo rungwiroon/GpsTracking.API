@@ -1,7 +1,7 @@
 using Domain;
 using System;
 
-namespace Core.Domain.Vehicle.Commands
+namespace Core.Domain.Vehicles.Commands
 {
     [Serializable]
     public class CreateVehicleType : ICommand

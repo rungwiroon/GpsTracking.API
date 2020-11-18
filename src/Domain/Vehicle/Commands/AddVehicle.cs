@@ -1,12 +1,14 @@
 using Domain;
-using Domain.User;
+using Core.Domain.Identity;
 using System;
 
-namespace Core.Domain.Vehicle.Commands
+namespace Core.Domain.Vehicles.Commands
 {
     [Serializable]
     public class AddVehicle : ICommand
     {
+        public UserAccountId IssuedBy { get; }
+
         public string LicensePlateId { get; }
 
         public UserGroupId UserGroupId { get; }
