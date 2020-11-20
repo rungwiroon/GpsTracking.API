@@ -8,7 +8,7 @@ namespace Core.Domain.SeedWork
 {
     public class Entity
     {
-        public Unit AddDomainEvent(IEvent @event)
+        public Unit AddDomainEvent(IDomainEvent @event)
         {
             throw new NotImplementedException();
         }

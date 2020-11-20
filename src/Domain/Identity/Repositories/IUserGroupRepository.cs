@@ -6,7 +6,7 @@ namespace Core.Domain.Identity
     {
         UserGroup GetById(UserGroupId userGroupId);
 
-        UserGroup[] GetByUserAccountId(UserAccountId userAccountId);
+        UserGroup[] GetByUserTenantId(UserAccountId userAccountId);
 
         UserGroup[] GetByVehicleId(VehicleId vehicleId);
 

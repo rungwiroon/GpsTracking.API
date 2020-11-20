@@ -4,19 +4,19 @@ using Core.Domain.SeedWork;
 
 namespace Core.Domain.Identity.Events
 {
-    public class UserGroupCreated : IEvent
+    public class UserGroupCreated : IDomainEvent
     {
         public UserGroupId UserGroupId { get; }
 
         public string UserGroupName { get; }
 
-        public AccountId AccountId { get; }
+        public TenantId TenantId { get; }
 
-        public UserGroupCreated(UserGroupId userGroupId, string userGroupName, AccountId accountId)
+        public UserGroupCreated(UserGroupId userGroupId, string userGroupName, TenantId tenantId)
         {
             UserGroupId = userGroupId;
             UserGroupName = userGroupName;
-            AccountId = accountId;
+            TenantId = TenantId;
         }
     }
 }

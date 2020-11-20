@@ -5,7 +5,7 @@ using Core.Domain.SeedWork;
 
 namespace Core.Domain.Trackers.Events
 {
-    public class SimCardAttached : IEvent
+    public class SimCardAttached : IDomainEvent
     {
     }
 }

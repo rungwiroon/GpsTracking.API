@@ -16,7 +16,7 @@ namespace Core.Domain.Identity
     {
         public UserAccountId Id { get; }
 
-        public Account Account { get; }
+        public Tenant Account { get; }
 
         public UserRoleId RoleId { get; set; }
 
@@ -31,7 +31,7 @@ namespace Core.Domain.Identity
         private UserAccount() { }
 
         internal UserAccount(
-            Account account, string userName, string password, UserRole role, 
+            Tenant account, string userName, string password, UserRole role, 
             string? email = null, string? name = null, string? descriptions = null)
         {
             Id = new();

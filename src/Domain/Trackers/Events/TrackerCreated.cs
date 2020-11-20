@@ -3,7 +3,7 @@ using System;
 
 namespace Core.Domain.Trackers.Events
 {
-    public class NewTrackerAdded : IEvent
+    public class NewTrackerAdded : IDomainEvent
     {
         public TrackerId Id { get; }
 

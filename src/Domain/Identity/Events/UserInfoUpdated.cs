@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Core.Domain.Identity.Events
 {
-    public class UserInfoUpdated : IEvent
+    public class UserInfoUpdated : IDomainEvent
     {
         public string? Name { get; }
 

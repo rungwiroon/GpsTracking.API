@@ -16,7 +16,7 @@ namespace Core.Domain.Trackers.Modules
     {
         public DeviceModuleId Id { get; }
 
-        public AccountId AccountId { get; }
+        public TenantId TenantId { get; }
 
         public DateTimeOffset CreatedAt { get; }
 

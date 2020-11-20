@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
 using Core.Domain.SeedWork;
+using System;
 
 namespace Core.Domain.Identity.Events
 {
-    public class UserAddedToGroup : IEvent
+    public class UserAddedToGroup : IDomainEvent
     {
         public UserGroupId UserGroupId { get; }
 

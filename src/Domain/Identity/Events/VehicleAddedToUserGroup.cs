@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Core.Domain.Identity.Events
 {
-    public class VehicleAddedToUserGroup : IEvent
+    public class VehicleAddedToUserGroup : IDomainEvent
     {
         public UserGroupId UserGroupId { get; }
 

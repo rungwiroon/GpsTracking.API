@@ -23,7 +23,7 @@ namespace Core.Domain.Trackers
 
         public TrackerInfo? Info { get; }
 
-        public AccountId OwnerId { get; }
+        public TenantId OwnerId { get; }
 
         public string SerialNumber { get; }
 
@@ -43,7 +43,7 @@ namespace Core.Domain.Trackers
         private Tracker() { }
 #pragma warning restore CS8618
 
-        internal Tracker(AccountId owner, string serialNumber, TrackerInfo? info = null)
+        internal Tracker(TenantId owner, string serialNumber, TrackerInfo? info = null)
         {
             Id = new TrackerId();
             OwnerId = owner;

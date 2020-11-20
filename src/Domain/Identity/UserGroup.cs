@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Core.Domain.Identity.Events;
 using Core.Domain.SeedWork;
-using Core.Domain.Identity.Events;
-using System.Linq;
 using Core.Domain.Vehicles;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Core.Domain.Identity
 {
@@ -26,7 +26,7 @@ namespace Core.Domain.Identity
 
         public string? Descriptions { get; private set; }
 
-        public AccountId AccountId { get; }
+        public TenantId TenantId { get; }
 
         private readonly List<UserAccountId> accounts = new();
         public IReadOnlyCollection<UserAccountId> Accounts => accounts.AsReadOnly();
@@ -34,12 +34,15 @@ namespace Core.Domain.Identity
         private readonly List<VehicleId> vehicles = new();
         public IReadOnlyCollection<VehicleId> Vehicles => vehicles.AsReadOnly();
 
-        internal UserGroup(AccountId owner, string name, string? descriptions = null)
+        private readonly List<VehicleGroupId> vehicleGroups = new();
+        public IReadOnlyCollection<VehicleGroupId> VehicleGroups => vehicleGroups.AsReadOnly();
+
+        internal UserGroup(TenantId owner, string name, string? descriptions = null)
         {
             Id = new UserGroupId();
             Name = name;
             Descriptions = descriptions;
-            AccountId = owner;
+            TenantId = owner;
 
             AddDomainEvent(new UserGroupCreated(Id, Name, owner));
         }
@@ -68,11 +71,11 @@ namespace Core.Domain.Identity
             AddDomainEvent(new UserAddedToGroup(Id, account.Id, Name, account.UserName));
         }
 
-        public void RemoveAccount(UserAccountId accountId)
+        public void RemoveAccount(UserAccountId tenantId)
         {
-            accounts.Remove(accounts.Single(aId => aId == accountId));
+            accounts.Remove(accounts.Single(aId => aId == tenantId));
 
-            AddDomainEvent(new UserRemovedFromGroup(Id, accountId));
+            AddDomainEvent(new UserRemovedFromGroup(Id, tenantId));
         }
 
         public void ClearUsers()
@@ -81,8 +84,8 @@ namespace Core.Domain.Identity
 
             accounts.Clear();
 
-            foreach(var accountId in accountsToRemove)
-                AddDomainEvent(new UserRemovedFromGroup(Id, accountId));
+            foreach(var tenantId in accountsToRemove)
+                AddDomainEvent(new UserRemovedFromGroup(Id, tenantId));
         }
 
         public void AddVehicle(Vehicle vehicle)

@@ -1,11 +1,9 @@
-using Domain;
-using System;
-using System.Collections.Generic;
 using Core.Domain.SeedWork;
+using System;
 
 namespace Core.Domain.Identity.Events
 {
-    public class UserGroupRenamed : IEvent
+    public class UserGroupRenamed : IDomainEvent
     {
         public UserGroupId UserGroupId { get; }
 

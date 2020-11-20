@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Core.Domain.Identity.Events
 {
-    public class AccountCreated : IEvent
+    public class AccountCreated : IDomainEvent
     {
-        public AccountId AccountId { get; }
+        public TenantId TenantId { get; }
 
-        public AccountCreated(AccountId accountId)
+        public AccountCreated(TenantId tenantId)
         {
-            AccountId = accountId;
+            TenantId = tenantId;
         }
     }
 }

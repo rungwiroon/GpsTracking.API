@@ -4,13 +4,13 @@ using Core.Domain.SeedWork;
 
 namespace Core.Domain.Identity.Events
 {
-    public class AccountDeactivated : IEvent
+    public class AccountDeactivated : IDomainEvent
     {
-        public AccountId AccountId { get; }
+        public TenantId TenantId { get; }
 
-        public AccountDeactivated(AccountId accountId)
+        public AccountDeactivated(TenantId tenantId)
         {
-            AccountId = accountId;
+            TenantId = tenantId;
         }
     }
 }

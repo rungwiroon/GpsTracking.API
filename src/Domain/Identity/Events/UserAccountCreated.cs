@@ -4,9 +4,9 @@ using Core.Domain.SeedWork;
 
 namespace Core.Domain.Identity.Events
 {
-    public class UserAccountCreated : IEvent
+    public class UserAccountCreated : IDomainEvent
     {
-        public AccountId AccountId { get; }
+        public TenantId TenantId { get; }
 
         public UserAccountId UserAccountId { get; }
 
@@ -16,11 +16,11 @@ namespace Core.Domain.Identity.Events
 
         public string RoleName { get; }
 
-        public UserAccountCreated(AccountId accountId, 
+        public UserAccountCreated(TenantId tenantId, 
             UserAccountId userAccountId, string userName, 
             UserRoleId userRoleId, string roleName)
         {
-            AccountId = accountId;
+            TenantId = tenantId;
             UserAccountId = userAccountId;
             UserName = userName;
             UserRoleId = userRoleId;

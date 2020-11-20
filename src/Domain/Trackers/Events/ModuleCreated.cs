@@ -4,8 +4,7 @@ using Core.Domain.SeedWork;
 
 namespace Core.Domain.Trackers.Events
 {
-    public class ModuleCreated : IEvent
+    public class ModuleCreated : IDomainEvent
     {
-        
     }
 }

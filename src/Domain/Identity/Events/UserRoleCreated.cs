@@ -1,11 +1,9 @@
 ﻿using Core.Domain.SeedWork;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Core.Domain.Identity.Events
 {
-    public class UserRoleCreated : IEvent
+    public class UserRoleCreated : IDomainEvent
     {
         public UserRoleId UserRoleId { get; }
 

@@ -8,12 +8,14 @@ namespace Core.Domain.Identity
 {
     public interface IAccountRepository
     {
-        Account GetById(AccountId accountId);
+        Tenant GetById(TenantId tenantId);
 
-        Account GetByUserAccountId(UserAccountId userAccountId);
+        Tenant GetByUserTenantId(UserAccountId userAccountId);
 
         UserAccount GetUserAccountById(UserAccountId userAccountId);
 
-        void Update(Account account);
+        void Create(Tenant account);
+
+        void Update(Tenant account);
     }
 }

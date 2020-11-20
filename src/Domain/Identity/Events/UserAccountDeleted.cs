@@ -5,14 +5,14 @@ using Core.Domain.SeedWork;
 
 namespace Core.Domain.Identity.Events
 {
-    public class UserAccountDeleted : IEvent
+    public class UserAccountDeleted : IDomainEvent
     {
-        public AccountId AccountId { get; }
+        public TenantId TenantId { get; }
         public UserAccountId UserAccountId { get; }
 
-        public UserAccountDeleted(AccountId accountId, UserAccountId userAccountId)
+        public UserAccountDeleted(TenantId tenantId, UserAccountId userAccountId)
         {
-            AccountId = accountId;
+            TenantId = tenantId;
             UserAccountId = userAccountId;
         }
     }

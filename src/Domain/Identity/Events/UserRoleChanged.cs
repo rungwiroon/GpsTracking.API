@@ -1,13 +1,11 @@
 ﻿using Core.Domain.SeedWork;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Core.Domain.Identity.Events
 {
-    public class UserRoleChanged : IEvent
+    public class UserRoleChanged : IDomainEvent
     {
-        public AccountId AccountId { get; }
+        public TenantId TenantId { get; }
 
         public UserAccountId UserAccountId { get; }
 
@@ -17,11 +15,11 @@ namespace Core.Domain.Identity.Events
 
         public string NewUserRoleName { get; }
 
-        public UserRoleChanged(AccountId accountId, UserAccountId userAccountId, 
+        public UserRoleChanged(TenantId tenantId, UserAccountId userAccountId, 
             UserRoleId oldUserRoleId,
             UserRoleId newUserRoleId, string newUserRoleName)
         {
-            AccountId = accountId;
+            TenantId = tenantId;
             UserAccountId = userAccountId;
             OldUserRoleId = oldUserRoleId;
             NewUserRoleId = newUserRoleId;

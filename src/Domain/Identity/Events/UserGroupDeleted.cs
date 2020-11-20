@@ -1,20 +1,18 @@
-﻿using Domain;
+﻿using Core.Domain.SeedWork;
 using System;
-using System.Collections.Generic;
-using Core.Domain.SeedWork;
 
 namespace Core.Domain.Identity.Events
 {
-    public class UserGroupDeleted : IEvent
+    public class UserGroupDeleted : IDomainEvent
     {
         public UserGroupId UserGroupId { get; }
 
-        public AccountId AccountId { get; }
+        public TenantId TenantId { get; }
 
-        public UserGroupDeleted(UserGroupId userGroupId, AccountId accountId)
+        public UserGroupDeleted(UserGroupId userGroupId, TenantId tenantId)
         {
             UserGroupId = userGroupId;
-            AccountId = accountId;
+            TenantId = TenantId;
         }
     }
 }
