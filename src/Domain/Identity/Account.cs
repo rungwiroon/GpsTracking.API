@@ -1,5 +1,8 @@
 ﻿using Core.Domain.Identity.Events;
 using Core.Domain.SeedWork;
+using Core.Domain.Trackers;
+using Core.Domain.Trackers.Modules;
+using Core.Domain.Vehicles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,10 +99,19 @@ namespace Core.Domain.Identity
             return new UserGroup(Id, name, descriptions);
         }
 
-        // public UserGroup CreateUserGroup(UserAccountId issuedBy, string name, string? descriptions = null)
-        // {
-        //     var userAcc = userAccounts.Single(ua => ua.Id == issuedBy);
-        //     return userAcc.CreateUserGroup(name, descriptions);
-        // }
+        public Tracker CreateTracker()
+        {
+            throw new NotImplementedException();
+        }
+
+        public DeviceModule CreateTrackerModule()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Vehicle CreateVehicle()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

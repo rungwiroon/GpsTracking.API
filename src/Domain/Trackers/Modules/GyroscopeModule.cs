@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Core.Domain.Trackers.Modules
 {
-    class GyroscopeModule
+    public class GyroscopeModule : DeviceModule
     {
     }
 }

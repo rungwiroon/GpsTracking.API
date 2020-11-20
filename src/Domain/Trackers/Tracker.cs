@@ -4,6 +4,8 @@ using Core.Domain.Trackers.Modules;
 using Core.Domain.Identity;
 using System;
 using System.Collections.Generic;
+using Core.Domain.Trackers.Events;
+using System.Linq;
 
 namespace Core.Domain.Trackers
 {
@@ -33,27 +35,36 @@ namespace Core.Domain.Trackers
 
         public DateTimeOffset CreatedAt { get; }
 
+        public bool IsActive { get; private set; }
+
+        public DateTimeOffset? TerminatedAt { get; private set; }
+
 #pragma warning disable CS8618
         private Tracker() { }
 #pragma warning restore CS8618
 
-        public Tracker(AccountId owner, string serialNumber, TrackerInfo? info = null)
+        internal Tracker(AccountId owner, string serialNumber, TrackerInfo? info = null)
         {
             Id = new TrackerId();
             OwnerId = owner;
             SerialNumber = serialNumber;
             Info = info;
             CreatedAt = DateTimeOffset.UtcNow;
+            IsActive = true;
         }
 
         public void AttachModule(DeviceModule module)
         {
-            throw new NotImplementedException();
+            modules.Add(module);
+
+            AddDomainEvent(new ModuleAttachedToTracker());
         }
 
         public void RemoveModule(DeviceModuleId moduleId)
         {
-            throw new NotImplementedException();
+            modules.Remove(modules.Single(m => m.Id == moduleId));
+
+            AddDomainEvent(new ModuleRemovedFromTracker());
         }
 
         public void AttachSensor(Sensor sensor, SensorOption option)
@@ -64,6 +75,17 @@ namespace Core.Domain.Trackers
         public void RemoveSensor(Sensor sensor, DateTimeOffset effectiveDate)
         {
             throw new NotImplementedException();
+        }
+
+        public void Terminate()
+        {
+            if(!IsActive)
+                return;
+            
+            IsActive = false;
+            TerminatedAt = DateTimeOffset.UtcNow;
+
+            AddDomainEvent(new TrackerTerminated());
         }
     }
 }
