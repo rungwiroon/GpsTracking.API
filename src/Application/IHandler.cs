@@ -1,5 +1,6 @@
 using System;
 using Core.Application;
+using Core.Domain;
 using Domain;
 
 namespace GpsTracking.Application

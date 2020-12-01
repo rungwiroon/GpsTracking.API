@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core.Application.Vehicles.Views
+namespace Core.Domain.Vehicles.Views
 {
     public class VehicleGroupVehiclesView : IViewModel
     {
@@ -64,14 +64,5 @@ namespace Core.Application.Vehicles.Views
             var vehicle = vehicles[@event.VehicleId];
             vehicle.Name = @event.NewName;
         }
-    }
-
-    public record VehicleInGroupView
-    {
-        public VehicleId VehicleId { get; set; }
-
-        public string LicensePlateId { get; set; }
-
-        public string Name { get; set; }
     }
 }

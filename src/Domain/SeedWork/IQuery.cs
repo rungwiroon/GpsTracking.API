@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Application
+namespace Core.Domain
 {
-    public interface IViewModel
+    public interface IQuery<TRes>
     {
     }
 }

@@ -1,14 +1,9 @@
 ﻿using Core.Domain.Identity;
 using Core.Domain.Identity.Events;
-using Core.Domain.Vehicles;
-using Core.Domain.Vehicles.Events;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Core.Application.Vehicles.Views
+namespace Core.Domain.Vehicles.Views
 {
     public class UserGroupVehiclesView : IViewModel
     {
