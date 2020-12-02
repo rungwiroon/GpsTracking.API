@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using Core.Domain.Trackers.Events;
 using System.Linq;
+using LanguageExt;
 
 namespace Core.Domain.Trackers
 {
@@ -53,18 +54,18 @@ namespace Core.Domain.Trackers
             IsActive = true;
         }
 
-        public void AttachModule(DeviceModule module)
+        public Seq<IDomainEvent> AttachModule(DeviceModule module)
         {
             modules.Add(module);
 
-            AddDomainEvent(new ModuleAttachedToTracker());
+            return new() { new ModuleAttachedToTracker() };
         }
 
-        public void RemoveModule(DeviceModuleId moduleId)
+        public Seq<IDomainEvent> RemoveModule(DeviceModuleId moduleId)
         {
             modules.Remove(modules.Single(m => m.Id == moduleId));
 
-            AddDomainEvent(new ModuleRemovedFromTracker());
+            return new() { new ModuleRemovedFromTracker() };
         }
 
         public void AttachSensor(Sensor sensor, SensorOption option)
@@ -77,15 +78,15 @@ namespace Core.Domain.Trackers
             throw new NotImplementedException();
         }
 
-        public void Terminate()
+        public Seq<IDomainEvent> Terminate()
         {
             if(!IsActive)
-                return;
+                return new SeqEmpty();
             
             IsActive = false;
             TerminatedAt = DateTimeOffset.UtcNow;
 
-            AddDomainEvent(new TrackerTerminated());
+            return new() { new TrackerTerminated() };
         }
     }
 }

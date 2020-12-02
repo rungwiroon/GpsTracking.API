@@ -1,5 +1,5 @@
+using Core.Domain.SeedWork;
 using Core.Domain.Trackers.Events;
-using Core.Domain.Trackers.Modules;
 using LanguageExt;
 using static LanguageExt.Prelude;
 
@@ -16,7 +16,7 @@ namespace Core.Domain.Trackers.Modules
             Imei = imei;
         }
 
-        public Unit AttachSimCard(SimCard simCard)
+        public Seq<IDomainEvent> AttachSimCard(SimCard simCard)
         {
             if (SimCard != null)
             {
@@ -25,9 +25,7 @@ namespace Core.Domain.Trackers.Modules
 
             SimCard = simCard;
 
-            AddDomainEvent(new SimCardAttached());
-
-            return unit;
+            return new() { new SimCardAttached() };
         }
 
         public void RemoveSimCard()
@@ -39,14 +37,20 @@ namespace Core.Domain.Trackers.Modules
             PublishSimCardRemoved();
         }
 
-        Unit PublishSimCardRemoved()
+        Seq<IDomainEvent> PublishSimCardRemoved()
             => SimCard switch
             {
-                PhoneSimCard psc => AddDomainEvent(new SimCardRemoved(
-                    SimCard.SerialNumber, this.Id, psc.PhoneNumber)),
-                IotSimCard _ => AddDomainEvent(new SimCardRemoved(
-                    SimCard.SerialNumber, this.Id)),
-                _ => unit
+                PhoneSimCard psc => new Seq<IDomainEvent>()
+                {
+                    new SimCardRemoved(
+                    SimCard.SerialNumber, this.Id, psc.PhoneNumber)
+                },
+                IotSimCard _ => new()
+                {
+                    (new SimCardRemoved(
+                    SimCard.SerialNumber, this.Id))
+                },
+                _ => new SeqEmpty()
             };
 
         public void SetApn()

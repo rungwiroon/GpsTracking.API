@@ -9,12 +9,12 @@ namespace Core.Domain.SeedWork
 {
     public class Entity : IEntity
     {
-        [NonSerialized] private readonly Queue<IDomainEvent> uncommittedEvents = new ();
+        //[NonSerialized] private readonly Queue<IDomainEvent> uncommittedEvents = new ();
 
-        public Unit AddDomainEvent(IDomainEvent @event)
-        {
-            uncommittedEvents.Enqueue(@event);
-            return unit;
-        }
+        //public Unit AddDomainEvent(IDomainEvent @event)
+        //{
+        //    uncommittedEvents.Enqueue(@event);
+        //    return unit;
+        //}
     }
 }

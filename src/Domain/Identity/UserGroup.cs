@@ -1,6 +1,8 @@
 ﻿using Core.Domain.Identity.Events;
 using Core.Domain.SeedWork;
 using Core.Domain.Vehicles;
+using Core.Domain.Vehicles.Events;
+using LanguageExt;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,8 +30,8 @@ namespace Core.Domain.Identity
 
         public TenantId TenantId { get; }
 
-        private readonly List<UserAccountId> accounts = new();
-        public IReadOnlyCollection<UserAccountId> Accounts => accounts.AsReadOnly();
+        private readonly List<UserAccountId> userAccounts = new();
+        public IReadOnlyCollection<UserAccountId> Accounts => userAccounts.AsReadOnly();
 
         private readonly List<VehicleId> vehicles = new();
         public IReadOnlyCollection<VehicleId> Vehicles => vehicles.AsReadOnly();
@@ -37,17 +39,19 @@ namespace Core.Domain.Identity
         private readonly List<VehicleGroupId> vehicleGroups = new();
         public IReadOnlyCollection<VehicleGroupId> VehicleGroups => vehicleGroups.AsReadOnly();
 
+#pragma warning disable CS8618
+        private UserGroup() { }
+#pragma warning restore CS8618
+
         internal UserGroup(TenantId owner, string name, string? descriptions = null)
         {
             Id = new UserGroupId();
             Name = name;
             Descriptions = descriptions;
             TenantId = owner;
-
-            AddDomainEvent(new UserGroupCreated(Id, Name, owner));
         }
 
-        public void ChangeName(string newName)
+        public Seq<IDomainEvent> ChangeName(string newName)
         {
             if(string.IsNullOrEmpty(newName))
                 throw new ArgumentNullException();
@@ -56,7 +60,7 @@ namespace Core.Domain.Identity
             
             Name = newName;
 
-            AddDomainEvent(@event);
+            return new() { @event };
         }
 
         public void ChangeDescription(string newDescriptions)
@@ -64,62 +68,84 @@ namespace Core.Domain.Identity
             Descriptions = newDescriptions;
         }
 
-        public void AddAccount(UserAccount account)
+        public Seq<IDomainEvent> AddAccount(UserAccount account)
         {
-            accounts.Add(account.Id);
+            userAccounts.Add(account.Id);
 
-            AddDomainEvent(new UserAddedToGroup(Id, account.Id, Name, account.UserName));
+            return new() { new UserAddedToGroup(Id, account.Id, Name, account.UserName) };
         }
 
-        public void RemoveAccount(UserAccountId tenantId)
+        public Seq<IDomainEvent> RemoveAccount(UserAccountId tenantId)
         {
-            accounts.Remove(accounts.Single(aId => aId == tenantId));
+            userAccounts.Remove(userAccounts.Single(aId => aId == tenantId));
 
-            AddDomainEvent(new UserRemovedFromGroup(Id, tenantId));
+            return new() { new UserRemovedFromGroup(Id, tenantId) };
         }
 
-        public void ClearUsers()
+        public Seq<IDomainEvent> ClearUsers()
         {
-            var accountsToRemove = accounts.ToArray();
+            var accountsToRemove = userAccounts.ToArray();
 
-            accounts.Clear();
+            userAccounts.Clear();
 
-            foreach(var tenantId in accountsToRemove)
-                AddDomainEvent(new UserRemovedFromGroup(Id, tenantId));
+            return accountsToRemove
+                .Select(uid => (IDomainEvent)new UserRemovedFromGroup(Id, uid))
+                .ToSeq();
         }
 
-        public void AddVehicle(Vehicle vehicle)
+        public Seq<IDomainEvent> AddVehicle(Vehicle vehicle)
         {
             vehicles.Add(vehicle.Id);
 
-            AddDomainEvent(new VehicleAddedToUserGroup(Id, vehicle.Id, vehicle.LicensePlateId, vehicle.Name));
+            return new()
+            {
+                new VehicleAddedToUserGroup(Id, vehicle.Id, vehicle.LicensePlateId, vehicle.Name)
+            };
         }
 
-        public void RemoveVehicle(VehicleId vehicleId)
+        public Seq<IDomainEvent> RemoveVehicle(VehicleId vehicleId)
         {
             vehicles.Remove(vehicles.Single(vId => vId == vehicleId));
 
-            AddDomainEvent(new VehicleRemovedFromUserGroup(Id, vehicleId));
+            return new()
+            {
+                new VehicleRemovedFromUserGroup(Id, vehicleId)
+            };
         }
 
-        public void ClearVehicles()
+        public Seq<IDomainEvent> ClearVehicles()
         {
             var vehiclesToRemove = vehicles.ToArray();
 
             vehicles.Clear();
 
-            foreach (var vehicleId in vehiclesToRemove)
-                AddDomainEvent(new VehicleRemovedFromUserGroup(Id, vehicleId));
+            return vehiclesToRemove
+                .Select(vehicleId => (IDomainEvent)new VehicleRemovedFromUserGroup(Id, vehicleId))
+                .ToSeq();
         }
 
-        public void AddVehicleGroup(VehicleGroup vehicleGroup)
+        public Seq<IDomainEvent> AddVehicleGroup(VehicleGroup vehicleGroup)
         {
             vehicleGroups.Add(vehicleGroup.Id);
-        }
 
-        public void RemoveVehicleGroup(VehicleGroupId vehicleGroupId)
+            return new()
+            {
+                new VehicleGroupAddedToUserGroup(
+                    TenantId,
+                    vehicleGroup.Id, vehicleGroup.Name,
+                    this.Id, this.Name)
+            };
+        }
+        
+        public Seq<IDomainEvent> RemoveVehicleGroup(VehicleGroupId vehicleGroupId)
         {
             vehicleGroups.RemoveAll(vg => vg == vehicleGroupId);
+
+            return new()
+            {
+                new VehicleGroupRemovedFromUserGroup(
+                    vehicleGroupId, Id)
+            };
         }
     }
 }

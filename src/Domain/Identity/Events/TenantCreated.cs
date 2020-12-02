@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Core.Domain.Identity.Events
 {
-    public class AccountCreated : IDomainEvent
+    public class TenantCreated : IDomainEvent
     {
         public TenantId TenantId { get; }
 
-        public AccountCreated(TenantId tenantId)
+        public TenantCreated(TenantId tenantId)
         {
             TenantId = tenantId;
         }

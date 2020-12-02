@@ -1,5 +1,6 @@
 ﻿using Core.Domain.Identity;
 using Core.Domain.Identity.Commands;
+using Core.Domain.Identity.Repositories;
 using GpsTracking.Application;
 using System;
 using System.Collections.Generic;
@@ -11,21 +12,21 @@ namespace Core.Application.Accounts
 {
     public class UserAccountHandler : ICommandHandler<CreateEditorAccount>
     {
-        private readonly IAccountRepository accountRepository;
+        private readonly ITenantRepository tenantRepository;
 
         public UserAccountHandler(
-            IAccountRepository accountRepository)
+            ITenantRepository tenantRepository)
         {
-            this.accountRepository = accountRepository;
+            this.tenantRepository = tenantRepository;
         }
 
         public void Handle(CreateEditorAccount command)
         {
-            var account = accountRepository.GetByUserTenantId(command.IssuedBy);
-            account.CreateUserAccount(command.IssuedBy,
+            var tenant = tenantRepository.GetByUserTenantId(command.IssuedBy);
+            tenant.CreateUserAccount(command.IssuedBy,
                 command.UserName, command.Password, UserRole.Editor, command.Email);
 
-            accountRepository.Update(account);
+            tenantRepository.Update(tenant);
         }
     }
 }

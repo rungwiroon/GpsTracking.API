@@ -1,14 +1,15 @@
 ﻿using Core.Domain.SeedWork;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Core.Domain.Vehicles.Events
 {
-    [Serializable]
-    public class VehicleRemoved : IDomainEvent
+    public class VehicleTerminated : IDomainEvent
     {
         public VehicleId VehicleId { get; }
 
-        public VehicleRemoved(VehicleId vehicleId)
+        public VehicleTerminated(VehicleId vehicleId)
         {
             VehicleId = vehicleId;
         }

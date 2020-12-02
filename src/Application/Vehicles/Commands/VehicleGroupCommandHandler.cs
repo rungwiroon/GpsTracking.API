@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using Core.Domain.Identity;
 using Core.Domain.Identity.Events;
-using Core.Domain.Vehicles;
+using Core.Domain.Identity.Repositories;
+using Core.Domain.SeedWork;
 using Core.Domain.Vehicles.Commands;
 using Core.Domain.Vehicles.Repositories;
 using GpsTracking.Application;
@@ -15,25 +16,31 @@ namespace Core.Application.Vehicles
         private readonly IVehicleGroupRepository vehicleGroupRepository;
         private readonly IVehicleRepository vehicleRepository;
         private readonly IUserGroupRepository userGroupRepository;
+        private readonly ITenantRepository tenantRepository;
         private readonly IEventBus eventBus;
 
         public VehicleGroupCommandHandler(
             IVehicleGroupRepository vehicleGroupRepository,
             IVehicleRepository vehicleRepository,
             IUserGroupRepository userGroupRepository,
+            ITenantRepository tenantRepository,
             IEventBus eventBus)
         {
             this.vehicleGroupRepository = vehicleGroupRepository;
             this.vehicleRepository = vehicleRepository;
             this.userGroupRepository = userGroupRepository;
+            this.tenantRepository = tenantRepository;
             this.eventBus = eventBus;
         }
 
         public void Handle(CreateVehicleGroup command)
         {
-            var vehicleGroup = new VehicleGroup(command.TenantId, command.Name);
+            var tenant = tenantRepository.GetById(command.TenantId);
+            var (vehicleGroup, events) = tenant.CreateVehicleGroup(command.Name, command.Description);
 
             vehicleGroupRepository.Create(vehicleGroup);
+
+            eventBus.Publish(events);
         }
 
         public void Handle(DeleteVehicleGroup command)
@@ -43,15 +50,14 @@ namespace Core.Application.Vehicles
 
             vehicleGroupRepository.Delete(command.VehicleGroupId);
 
-            foreach(var userGroup in userGroups)
-            {
-                var vehicleRemovedFromUserGroup = new VehiclesRemovedFromUserGroup(
+            var events = userGroups
+                .Select(userGroup => (IDomainEvent)new VehiclesRemovedFromUserGroup(
                     userGroup.Id, userGroup.Name,
                     vehicles.Select(v => new VehiclesRemovedFromUserGroup.Vehicle(
-                        v.Id, v.LicensePlateId, v.Name)));
+                        v.Id, v.LicensePlateId, v.Name))))
+                .ToSeq();
 
-                eventBus.Publish(vehicleRemovedFromUserGroup);
-            }
+            eventBus.Publish(events);
         }
     }
 }

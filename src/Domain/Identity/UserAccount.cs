@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Core.Domain.Identity.Events;
 using Core.Domain.SeedWork;
+using LanguageExt;
 
 namespace Core.Domain.Identity
 {
@@ -28,7 +29,9 @@ namespace Core.Domain.Identity
 
         public string? Descriptions { get; private set; }
 
+#pragma warning disable CS8618
         private UserAccount() { }
+#pragma warning restore CS8618
 
         internal UserAccount(
             Tenant account, string userName, string password, UserRole role, 
@@ -43,21 +46,21 @@ namespace Core.Domain.Identity
             Descriptions = descriptions;
         }
 
-        internal void ChangeRole(UserRole newRole)
+        internal Seq<IDomainEvent> ChangeRole(UserRole newRole)
         {
             var @event = new UserRoleChanged(Account.Id, Id, RoleId, newRole.Id, newRole.Name);
 
             RoleId = newRole.Id;
 
-            AddDomainEvent(@event);
+            return new() { @event };
         }
 
-        internal void ChangeInfo(string newName, string? newDescriptions)
+        internal Seq<IDomainEvent> ChangeInfo(string newName, string? newDescriptions)
         {
             Name = newName;
             Descriptions = newDescriptions;
 
-            AddDomainEvent(new UserInfoUpdated(newName, newDescriptions, DateTimeOffset.UtcNow));
+            return new() { new UserInfoUpdated(newName, newDescriptions, DateTimeOffset.UtcNow) };
         }
 
         internal void ChangePassword()

@@ -4,6 +4,7 @@ using Core.Domain.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LanguageExt;
 
 namespace Core.Domain.Vehicles
 {
@@ -31,59 +32,62 @@ namespace Core.Domain.Vehicles
         private VehicleGroup() { }
 #pragma warning restore CS8618
 
-        public VehicleGroup(TenantId tenantId,
+        internal VehicleGroup(TenantId tenantId,
             string name, string? description = null)
         {
             Id = new VehicleGroupId();
             Name = name;
             TenantId = tenantId;
             Description = description;
-
-            AddDomainEvent(new VehicleGroupCreated(TenantId, Id, Name));
         }
 
-        public void AddVehicle(Vehicle vehicle)
+        public Seq<IDomainEvent> AddVehicle(Vehicle vehicle)
         {
             if(vehicle == null)
                 throw new ArgumentNullException(nameof(vehicle));
 
             vehicles.Add(vehicle);
 
-            AddDomainEvent(new VehicleAddedToGroup(
-                vehicle.TenantId, Id, Name, vehicle.Id, 
-                vehicle.LicensePlateId, vehicle.Name));
+            return new()
+            {
+                new VehicleAddedToGroup(
+                    vehicle.TenantId, Id, Name, vehicle.Id,
+                    vehicle.LicensePlateId, vehicle.Name)
+            };
         }
 
-        public void AddVehicles(IEnumerable<Vehicle> vehicles)
+        public Seq<IDomainEvent> AddVehicles(IEnumerable<Vehicle> vehicles)
         {
             if(vehicles == null)
                 throw new ArgumentNullException(nameof(vehicles));
 
             this.vehicles.AddRange(vehicles);
 
-            foreach(var vehicle in vehicles)
-                AddDomainEvent(new VehicleAddedToGroup(
+            return vehicles
+                .Select(vehicle => (IDomainEvent)new VehicleAddedToGroup(
                     TenantId, Id, Name, vehicle.Id, 
-                    vehicle.LicensePlateId, vehicle.Name));
+                    vehicle.LicensePlateId, vehicle.Name))
+                .ToSeq();
         }
 
-        public void RemoveVehicle(VehicleId vehicleId)
+        public Seq<IDomainEvent> RemoveVehicle(VehicleId vehicleId)
         {
             if(vehicleId == null)
                 throw new ArgumentNullException(nameof(vehicleId));
 
             this.vehicles.Remove(this.vehicles.Single(v => v.Id == vehicleId));
 
-            AddDomainEvent(new VehicleRemovedFromGroup(Id, vehicleId));
+            return new() { new VehicleRemovedFromGroup(Id, vehicleId) };
         }
 
-        public void Clear()
+        public Seq<IDomainEvent> Clear()
         {
             var vehiclesToRemove = this.Vehicles.ToArray();
             vehicles.Clear();
             
-            foreach(var vehicle in vehiclesToRemove)
-                AddDomainEvent(new VehicleRemovedFromGroup(Id, vehicle.Id));
+            return vehiclesToRemove
+                .Select(vehicle => (IDomainEvent)new VehicleRemovedFromGroup(Id, vehicle.Id))
+                .ToSeq();
         }
     }
 }

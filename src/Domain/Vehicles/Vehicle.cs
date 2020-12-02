@@ -5,6 +5,8 @@ using Core.Domain.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LanguageExt;
+using static LanguageExt.Prelude;
 
 namespace Core.Domain.Vehicles
 {
@@ -45,7 +47,7 @@ namespace Core.Domain.Vehicles
         private Vehicle() { }
 #pragma warning restore CS8618
 
-        public Vehicle(
+        internal Vehicle(
             string licensePlateId, TenantId tenantId, 
             VehicleType? vehicleType = null, string? name = null)
         {
@@ -59,63 +61,67 @@ namespace Core.Domain.Vehicles
             CreatedAt = DateTimeOffset.UtcNow;
         }
 
-        public void InstallTracker(Tracker tracker)
+        public Seq<IDomainEvent> InstallTracker(Tracker tracker)
         {
             trackers.Add(tracker.Id);
 
-            base.AddDomainEvent(new TrackerInstalled(Id, tracker.Id, 
-                tracker.SerialNumber, tracker.Info?.Brand, tracker.Info?.Model));
+            return new()
+            {
+                new TrackerInstalled(
+                    Id, tracker.Id,
+                    tracker.SerialNumber, 
+                    tracker.Info?.Brand, tracker.Info?.Model)
+            };
         }
 
-        public void RemoveTracker(TrackerId trackerId)
+        public Seq<IDomainEvent> RemoveTracker(TrackerId trackerId)
         {
             trackers.Remove(trackers.Single(t => t == trackerId));
 
-            base.AddDomainEvent(new TrackerRemoved(Id, trackerId));
+            return new()
+            {
+                new TrackerRemoved(Id, trackerId)
+            };
         }
 
-        public void ChangeLicensePlate(string newLicensePlateId)
+        public Seq<IDomainEvent> ChangeLicensePlate(string newLicensePlateId)
         {
             var @event = new VehicleLicensePlateChanged(Id, this.LicensePlateId, newLicensePlateId);
 
             LicensePlateId = newLicensePlateId;
 
-            base.AddDomainEvent(@event);
+            return new() { @event };
         }
 
-        public void ChangeName(string newName)
+        public Seq<IDomainEvent> ChangeName(string newName)
         {
             var @event = new VehicleNameChanged(Id, this.Name, newName);
 
             Name = newName;
 
-            base.AddDomainEvent(@event);
+            return new() { @event };
         }
 
-        public void ChangeVehicleType(VehicleType newVehicleType)
+        public Seq<IDomainEvent> ChangeVehicleType(VehicleType newVehicleType)
         {
             var @event = new VehicleTypeChanged(Id, Type, newVehicleType);
 
             Type = newVehicleType;
 
-            base.AddDomainEvent(@event);
+            return new() { @event };
         }
 
-        //public void ChangeUserGroup(UserGroupId newUserGroupId)
-        //{
-        //    var @event = new VehicleGroupChanged(Id, TenantId, newUserGroupId);
-
-        //    TenantId = newUserGroupId;
-
-        //    AddDomainEvent(@event);
-        //}
-
-        public void Terminate()
+        public Seq<IDomainEvent> Terminate()
         {
             if (TerminatedAt != null)
-                return;
+                return new SeqEmpty();
 
             TerminatedAt = DateTimeOffset.UtcNow;
+
+            return new()
+            {
+                new VehicleTerminated(Id)
+            };
         }
     }
 }

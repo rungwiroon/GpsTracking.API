@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Domain.Vehicles.Events;
+using Core.Domain.Identity.Repositories;
 
 namespace Core.Application.Vehicles
 {
@@ -20,19 +21,22 @@ namespace Core.Application.Vehicles
         private readonly IUserGroupRepository userGroupRepository;
         private readonly IVehicleTypeRepository vehicleTypeRepository;
         private readonly IVehicleGroupRepository vehicleGroupRepository;
+        private readonly ITenantRepository tenantRepository;
         private readonly IEventBus eventBus;
 
         public VehicleCommandHandler(
             IVehicleRepository vehicleRepository,
             IUserGroupRepository userGroupRepository,
-            IVehicleTypeRepository vehicleTypeRepository, 
-            IVehicleGroupRepository vehicleGroupRepository, 
+            IVehicleTypeRepository vehicleTypeRepository,
+            IVehicleGroupRepository vehicleGroupRepository,
+            ITenantRepository tenantRepository,
             IEventBus eventBus)
         {
             this.vehicleRepository = vehicleRepository;
             this.userGroupRepository = userGroupRepository;
             this.vehicleTypeRepository = vehicleTypeRepository;
             this.vehicleGroupRepository = vehicleGroupRepository;
+            this.tenantRepository = tenantRepository;
             this.eventBus = eventBus;
         }
 
@@ -42,13 +46,15 @@ namespace Core.Application.Vehicles
             var vehicleType = command.VehicleTypeId == null
                 ? vehicleTypeRepository.GetById(command.VehicleTypeId)
                 : null;
-            var vehicle = new Vehicle(
+            var tenant = tenantRepository.GetById(userGroup.TenantId);
+
+            var (vehicle, events) = tenant.CreateVehicle(
                 command.LicensePlateId,
-                userGroup.TenantId,
                 vehicleType,
                 command.Name);
 
             vehicleRepository.Create(vehicle);
+            eventBus.Publish(events);
         }
 
         public void Handle(RemoveVehicle command)
@@ -61,7 +67,6 @@ namespace Core.Application.Vehicles
             }
 
             vehicleRepository.Delete(command.VehicleId);
-
             eventBus.Publish(new VehicleRemoved(command.VehicleId));
         }
     }

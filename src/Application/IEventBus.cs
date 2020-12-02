@@ -11,5 +11,6 @@ namespace Core.Application
     public interface IEventBus
     {
         Unit Publish(IDomainEvent @event);
+        Unit Publish(Seq<IDomainEvent> domainEvents);
     }
 }

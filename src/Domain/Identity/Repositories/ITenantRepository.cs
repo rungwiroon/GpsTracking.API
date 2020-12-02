@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core.Domain.Identity
+namespace Core.Domain.Identity.Repositories
 {
-    public interface IAccountRepository
+    public interface ITenantRepository
     {
         Tenant GetById(TenantId tenantId);
 

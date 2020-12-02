@@ -25,13 +25,11 @@ namespace Core.Domain.Vehicles
             new VehicleTypeId(Guid.Empty), "Default", "Default vehicle type");
         public static VehicleType Default => defaultType;
 
-        public VehicleType(VehicleTypeId id, string name, string? description = null)
+        internal VehicleType(VehicleTypeId id, string name, string? description = null)
         {
             Id = id;
             Name = name;
             Description = description;
-
-            base.AddDomainEvent(new VehicleTypeCreated(Id, Name));
         }
     }
 }

@@ -4,7 +4,7 @@ using Domain;
 
 namespace Core.Domain.Identity.Commands
 {
-    public class RegisterAccount : ICommand
+    public class RegisterTenant : ICommand
     {
         public string UserName { get; }
 
