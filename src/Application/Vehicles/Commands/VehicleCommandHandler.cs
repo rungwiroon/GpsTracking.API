@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Domain.Vehicles.Events;
 
 namespace Core.Application.Vehicles
 {
@@ -18,15 +19,21 @@ namespace Core.Application.Vehicles
         private readonly IVehicleRepository vehicleRepository;
         private readonly IUserGroupRepository userGroupRepository;
         private readonly IVehicleTypeRepository vehicleTypeRepository;
+        private readonly IVehicleGroupRepository vehicleGroupRepository;
+        private readonly IEventBus eventBus;
 
         public VehicleCommandHandler(
             IVehicleRepository vehicleRepository,
-            IUserGroupRepository userGroupRepository, 
-            IVehicleTypeRepository vehicleTypeRepository)
+            IUserGroupRepository userGroupRepository,
+            IVehicleTypeRepository vehicleTypeRepository, 
+            IVehicleGroupRepository vehicleGroupRepository, 
+            IEventBus eventBus)
         {
             this.vehicleRepository = vehicleRepository;
             this.userGroupRepository = userGroupRepository;
             this.vehicleTypeRepository = vehicleTypeRepository;
+            this.vehicleGroupRepository = vehicleGroupRepository;
+            this.eventBus = eventBus;
         }
 
         public void Handle(AddVehicle command)
@@ -46,7 +53,16 @@ namespace Core.Application.Vehicles
 
         public void Handle(RemoveVehicle command)
         {
-            throw new NotImplementedException();
+            var vehicleGroups = vehicleGroupRepository.GetByVehicleId(command.VehicleId);
+            
+            foreach(var vehicleGroup in vehicleGroups)
+            {
+                vehicleGroup.RemoveVehicle(command.VehicleId);
+            }
+
+            vehicleRepository.Delete(command.VehicleId);
+
+            eventBus.Publish(new VehicleRemoved(command.VehicleId));
         }
     }
 }

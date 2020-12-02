@@ -111,5 +111,15 @@ namespace Core.Domain.Identity
             foreach (var vehicleId in vehiclesToRemove)
                 AddDomainEvent(new VehicleRemovedFromUserGroup(Id, vehicleId));
         }
+
+        public void AddVehicleGroup(VehicleGroup vehicleGroup)
+        {
+            vehicleGroups.Add(vehicleGroup.Id);
+        }
+
+        public void RemoveVehicleGroup(VehicleGroupId vehicleGroupId)
+        {
+            vehicleGroups.RemoveAll(vg => vg == vehicleGroupId);
+        }
     }
 }

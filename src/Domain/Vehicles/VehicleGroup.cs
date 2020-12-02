@@ -14,11 +14,11 @@ namespace Core.Domain.Vehicles
         public VehicleGroupId(Guid id) : base(id) { }
     }
 
-    public class VehicleGroup : Entity
+    public class VehicleGroup : Entity, IAggregateRoot
     {
         public VehicleGroupId Id { get; }
 
-        public UserGroupId UserGroupId { get; }
+        public TenantId TenantId { get; }
 
         public string Name { get; }
 
@@ -31,14 +31,15 @@ namespace Core.Domain.Vehicles
         private VehicleGroup() { }
 #pragma warning restore CS8618
 
-        public VehicleGroup(string name, UserGroupId userGroupId, string? description = null)
+        public VehicleGroup(TenantId tenantId,
+            string name, string? description = null)
         {
             Id = new VehicleGroupId();
             Name = name;
-            UserGroupId = userGroupId;
+            TenantId = tenantId;
             Description = description;
 
-            AddDomainEvent(new VehicleGroupCreated(Id, Name, userGroupId));
+            AddDomainEvent(new VehicleGroupCreated(TenantId, Id, Name));
         }
 
         public void AddVehicle(Vehicle vehicle)
@@ -49,7 +50,8 @@ namespace Core.Domain.Vehicles
             vehicles.Add(vehicle);
 
             AddDomainEvent(new VehicleAddedToGroup(
-                Id, Name, vehicle.Id, vehicle.LicensePlateId, vehicle.Name));
+                vehicle.TenantId, Id, Name, vehicle.Id, 
+                vehicle.LicensePlateId, vehicle.Name));
         }
 
         public void AddVehicles(IEnumerable<Vehicle> vehicles)
@@ -61,7 +63,8 @@ namespace Core.Domain.Vehicles
 
             foreach(var vehicle in vehicles)
                 AddDomainEvent(new VehicleAddedToGroup(
-                    Id, Name, vehicle.Id, vehicle.LicensePlateId, vehicle.Name));
+                    TenantId, Id, Name, vehicle.Id, 
+                    vehicle.LicensePlateId, vehicle.Name));
         }
 
         public void RemoveVehicle(VehicleId vehicleId)

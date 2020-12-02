@@ -1,4 +1,5 @@
-﻿using Core.Domain.Vehicles;
+﻿using Core.Domain.SeedWork;
+using Core.Domain.Vehicles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace Core.Domain.Identity.Events
 {
-    public class VehiclesRemovedFromUserGroup
+    public class VehiclesRemovedFromUserGroup : IDomainEvent
     {
         public UserGroupId UserGroupId { get; }
 

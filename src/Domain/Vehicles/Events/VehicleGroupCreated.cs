@@ -12,14 +12,12 @@ namespace Core.Domain.Vehicles.Events
 
         public string VehicleGroupName { get; }
 
-        public UserGroupId UserGroupId { get; }
-
         public VehicleGroupCreated(
-            VehicleGroupId vehicleGroupId, string vehicleGroupName, UserGroupId userGroupId)
+            TenantId tenantId, VehicleGroupId vehicleGroupId, string vehicleGroupName)
         {
+            TenantId = tenantId;
             VehicleGroupId = vehicleGroupId;
             VehicleGroupName = vehicleGroupName;
-            UserGroupId = userGroupId;
         }
     }
 }

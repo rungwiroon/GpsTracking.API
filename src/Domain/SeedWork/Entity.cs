@@ -3,14 +3,18 @@ using LanguageExt;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using static LanguageExt.Prelude;
 
 namespace Core.Domain.SeedWork
 {
-    public class Entity
+    public class Entity : IEntity
     {
+        [NonSerialized] private readonly Queue<IDomainEvent> uncommittedEvents = new ();
+
         public Unit AddDomainEvent(IDomainEvent @event)
         {
-            throw new NotImplementedException();
+            uncommittedEvents.Enqueue(@event);
+            return unit;
         }
     }
 }

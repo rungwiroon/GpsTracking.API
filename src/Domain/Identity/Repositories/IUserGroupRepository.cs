@@ -10,6 +10,8 @@ namespace Core.Domain.Identity
 
         UserGroup[] GetByVehicleId(VehicleId vehicleId);
 
+        UserGroup[] GetByVehicleGroupId(VehicleGroupId vehicleGroupId);
+
         void Update(UserGroup userGroup);
     }
 }

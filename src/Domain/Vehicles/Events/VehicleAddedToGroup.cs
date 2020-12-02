@@ -19,9 +19,8 @@ namespace Core.Domain.Vehicles.Events
 
         public string? VehicleName { get; }
 
-        public DateTimeOffset GlobalSequenceNumber { get; }
-
         public VehicleAddedToGroup(
+            TenantId tenantId,
             VehicleGroupId vehicleGroupId,
             string vehicleGroupName,
 
@@ -30,14 +29,14 @@ namespace Core.Domain.Vehicles.Events
             string? vehicleName
             )
         {
+            TenantId = tenantId;
+
             VehicleGroupId = vehicleGroupId;
             VehicleGroupName = vehicleGroupName;
 
             VehicleId = vehicleId;
             VehicleLicensePlateId = vehicleLicensePlateId;
             VehicleName = vehicleName;
-
-            GlobalSequenceNumber = DateTimeOffset.UtcNow;
         }
     }
 }

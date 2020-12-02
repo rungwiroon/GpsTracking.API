@@ -7,14 +7,14 @@ namespace Core.Domain.Vehicles.Commands
     [Serializable]
     public class CreateVehicleGroup : ICommand
     {
-        public UserGroupId UserGroupId { get; }
+        public TenantId TenantId { get; }
 
         public string Name { get; }
 
         public CreateVehicleGroup(
-            UserGroupId userGroupId, string name)
+            TenantId tenantId, string name)
         {
-            UserGroupId = userGroupId;
+            TenantId = tenantId;
             Name = name;
         }
     }

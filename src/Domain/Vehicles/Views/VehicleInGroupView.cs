@@ -10,6 +10,6 @@ namespace Core.Domain.Vehicles.Views
 
         public string LicensePlateId { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 }
