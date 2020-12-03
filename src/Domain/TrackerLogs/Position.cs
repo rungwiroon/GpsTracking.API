@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Core.Domain.SeedWork;
+using System;
 using System.Runtime.Serialization;
-using System.Text;
 
-namespace Domain.TrackerLog
+namespace Domain.TrackerLogs
 {
     [Serializable]
-    public record GpsPosition : ISerializable
+    public class GpsPosition : IValueObject
     {
         public double Latitude { get; }
 
@@ -15,14 +14,10 @@ namespace Domain.TrackerLog
         public GpsPosition(double latitude, double longitude)
             => (Latitude, Longitude) = (latitude, longitude);
 
-        public double Distance(GpsPosition position)
-        {
-            throw new NotImplementedException();
-        }
-
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            throw new NotImplementedException();
+            info.AddValue(nameof(Latitude), Latitude);
+            info.AddValue(nameof(Longitude), Longitude);
         }
     }
 }

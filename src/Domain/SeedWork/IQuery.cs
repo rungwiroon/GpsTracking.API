@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Core.Domain
 {
     public interface IQuery<TRes>
+        where TRes : IViewModel
     {
     }
 }

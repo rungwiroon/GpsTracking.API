@@ -1,7 +1,7 @@
 ﻿using Core.Domain.Trackers;
 using System;
 
-namespace Domain.TrackerLog.Events
+namespace Domain.TrackerLogs.Events
 {
     public class DigitalSensorEvent : DeviceEvent
     {

@@ -1,11 +1,11 @@
-﻿using System.Linq;
-using Core.Domain.Identity;
+﻿using Core.Domain.Identity;
 using Core.Domain.Identity.Events;
 using Core.Domain.Identity.Repositories;
 using Core.Domain.SeedWork;
 using Core.Domain.Vehicles.Commands;
 using Core.Domain.Vehicles.Repositories;
 using GpsTracking.Application;
+using System.Linq;
 
 namespace Core.Application.Vehicles
 {

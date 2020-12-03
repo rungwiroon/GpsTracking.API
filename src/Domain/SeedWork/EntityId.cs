@@ -14,7 +14,7 @@ namespace Core.Domain.SeedWork
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            throw new NotImplementedException();
+            info.AddValue(nameof(Value), Value);
         }
     }
 }

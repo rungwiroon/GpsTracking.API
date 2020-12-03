@@ -1,4 +1,4 @@
-﻿namespace Domain.TrackerLog
+﻿namespace Domain.TrackerLogs
 {
     public struct SensorData<T>
         where T : struct

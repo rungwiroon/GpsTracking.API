@@ -1,15 +1,9 @@
 ﻿using Core.Domain.Identity;
-using Core.Domain.Vehicles;
+using Core.Domain.Identity.Repositories;
 using Core.Domain.Vehicles.Commands;
+using Core.Domain.Vehicles.Events;
 using Core.Domain.Vehicles.Repositories;
 using GpsTracking.Application;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Core.Domain.Vehicles.Events;
-using Core.Domain.Identity.Repositories;
 
 namespace Core.Application.Vehicles
 {
