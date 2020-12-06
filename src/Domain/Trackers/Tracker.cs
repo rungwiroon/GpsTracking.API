@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Core.Domain.Trackers.Events;
 using System.Linq;
 using LanguageExt;
+using Core.Domain.TrackerLogs;
 
 namespace Core.Domain.Trackers
 {
@@ -87,6 +88,11 @@ namespace Core.Domain.Trackers
             TerminatedAt = DateTimeOffset.UtcNow;
 
             return new() { new TrackerTerminated() };
+        }
+
+        public (TrackerLog, Seq<IDomainEvent>) CreateLog()
+        {
+            throw new NotImplementedException();
         }
     }
 }

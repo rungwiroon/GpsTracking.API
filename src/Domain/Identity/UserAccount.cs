@@ -34,13 +34,13 @@ namespace Core.Domain.Identity
 #pragma warning restore CS8618
 
         internal UserAccount(
-            Tenant account, string userName, string password, UserRole role, 
+            Tenant account, string userName, string passwordHash, UserRoleId roleId, 
             string? email = null, string? name = null, string? descriptions = null)
         {
             Id = new();
             Account = account;
             UserName = userName;
-            RoleId = role?.Id ?? UserRole.Viewer.Id;
+            RoleId = roleId;
             Email = email;
             Name = name;
             Descriptions = descriptions;
@@ -57,13 +57,26 @@ namespace Core.Domain.Identity
 
         internal Seq<IDomainEvent> ChangeInfo(string newName, string? newDescriptions)
         {
-            Name = newName;
-            Descriptions = newDescriptions;
+            var @event = new UserInfoUpdated(
+                Name, newName, Descriptions, newDescriptions, DateTimeOffset.UtcNow);
 
-            return new() { new UserInfoUpdated(newName, newDescriptions, DateTimeOffset.UtcNow) };
+            Apply(@event);
+
+            return new() { @event };
+        }
+
+        internal void Apply(UserInfoUpdated @event)
+        {
+            Name = @event.NewName;
+            Descriptions = @event.NewDescriptions;
         }
 
         internal void ChangePassword()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void Close()
         {
             throw new NotImplementedException();
         }

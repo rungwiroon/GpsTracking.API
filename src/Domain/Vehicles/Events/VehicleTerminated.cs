@@ -9,6 +9,8 @@ namespace Core.Domain.Vehicles.Events
     {
         public VehicleId VehicleId { get; }
 
+        public DateTimeOffset TerminatedAt { get; }
+
         public VehicleTerminated(VehicleId vehicleId)
         {
             VehicleId = vehicleId;

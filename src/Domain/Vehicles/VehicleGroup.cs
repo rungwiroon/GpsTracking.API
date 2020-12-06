@@ -25,8 +25,8 @@ namespace Core.Domain.Vehicles
 
         public string? Description { get; }
 
-        private readonly List<Vehicle> vehicles = new();
-        public IReadOnlyCollection<Vehicle> Vehicles => vehicles.AsReadOnly();
+        private readonly List<VehicleId> vehicles = new();
+        public IReadOnlyCollection<VehicleId> Vehicles => vehicles.AsReadOnly();
 
 #pragma warning disable CS8618
         private VehicleGroup() { }
@@ -46,14 +46,18 @@ namespace Core.Domain.Vehicles
             if(vehicle == null)
                 throw new ArgumentNullException(nameof(vehicle));
 
-            vehicles.Add(vehicle);
-
-            return new()
-            {
-                new VehicleAddedToGroup(
+            var @event = new VehicleAddedToGroup(
                     vehicle.TenantId, Id, Name, vehicle.Id,
-                    vehicle.LicensePlateId, vehicle.Name)
-            };
+                    vehicle.LicensePlateId, vehicle.Name);
+
+            Apply(@event);
+
+            return new() { @event };
+        }
+
+        public void Apply(VehicleAddedToGroup @event)
+        {
+            vehicles.Add(@event.VehicleId);
         }
 
         public Seq<IDomainEvent> AddVehicles(IEnumerable<Vehicle> vehicles)
@@ -61,13 +65,18 @@ namespace Core.Domain.Vehicles
             if(vehicles == null)
                 throw new ArgumentNullException(nameof(vehicles));
 
-            this.vehicles.AddRange(vehicles);
-
-            return vehicles
-                .Select(vehicle => (IDomainEvent)new VehicleAddedToGroup(
+            var events = vehicles
+                .Select(vehicle => new VehicleAddedToGroup(
                     TenantId, Id, Name, vehicle.Id, 
                     vehicle.LicensePlateId, vehicle.Name))
                 .ToSeq();
+
+            foreach(var @event in events)
+            {
+                Apply(@event);
+            }
+
+            return events.Cast<IDomainEvent>();
         }
 
         public Seq<IDomainEvent> RemoveVehicle(VehicleId vehicleId)
@@ -75,19 +84,30 @@ namespace Core.Domain.Vehicles
             if(vehicleId == null)
                 throw new ArgumentNullException(nameof(vehicleId));
 
-            this.vehicles.Remove(this.vehicles.Single(v => v.Id == vehicleId));
+            var @event = new VehicleRemovedFromGroup(Id, vehicleId);
+            Apply(@event);
 
-            return new() { new VehicleRemovedFromGroup(Id, vehicleId) };
+            return new() { @event };
+        }
+
+        public void Apply(VehicleRemovedFromGroup @event)
+        {
+            this.vehicles.RemoveAll(vId => vId == @event.VehicleId);
         }
 
         public Seq<IDomainEvent> Clear()
         {
             var vehiclesToRemove = this.Vehicles.ToArray();
-            vehicles.Clear();
-            
-            return vehiclesToRemove
-                .Select(vehicle => (IDomainEvent)new VehicleRemovedFromGroup(Id, vehicle.Id))
+            var events = vehiclesToRemove
+                .Select(vId => new VehicleRemovedFromGroup(Id, vId))
                 .ToSeq();
+
+            foreach(var @event in events)
+            {
+                Apply(@event);
+            }
+
+            return events.Cast<IDomainEvent>();
         }
     }
 }

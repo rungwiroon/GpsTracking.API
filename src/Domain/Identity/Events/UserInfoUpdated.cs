@@ -7,16 +7,25 @@ namespace Core.Domain.Identity.Events
 {
     public class UserInfoUpdated : IDomainEvent
     {
-        public string? Name { get; }
+        public string? OldName { get; }
 
-        public string? Descriptions { get; }
+        public string? NewName { get; }
+
+        public string? OldDescriptions { get; }
+        public string? NewDescriptions { get; }
 
         public DateTimeOffset UpdatedAt { get; }
 
-        public UserInfoUpdated(string? name, string? descriptions, DateTimeOffset updatedAt)
+        public UserInfoUpdated(string? oldName, string? newName, 
+            string? oldDescriptions, string? newDescriptions, 
+            DateTimeOffset updatedAt)
         {
-            Name = name;
-            Descriptions = descriptions;
+            OldName = oldName;
+            NewName = newName;
+
+            OldDescriptions = oldDescriptions;
+            NewDescriptions = newDescriptions;
+
             UpdatedAt = updatedAt;
         }
     }

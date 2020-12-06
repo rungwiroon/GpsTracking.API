@@ -14,6 +14,8 @@ namespace Core.Domain.TrackerLogs
 
     public class TrackerLog : IEntity, IAggregateRoot
     {
+        public TrackerLogId Id { get; }
+
 
     }
 }

@@ -10,4 +10,8 @@
     <PackageReference Include="LanguageExt.Core" Version="3.4.15" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Vehicles\Services\" />
+  </ItemGroup>
+
 </Project>

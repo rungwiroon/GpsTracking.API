@@ -1,6 +1,5 @@
 ﻿using System;
 using Core.Domain.SeedWork;
-using Core.Domain.Vehicles.Events;
 
 namespace Core.Domain.Vehicles
 {
@@ -20,6 +19,8 @@ namespace Core.Domain.Vehicles
         public string? Description { get; }
 
         public Uri? IconUrl { get; }
+
+        //public Icon Icon { get; }
 
         private static readonly VehicleType defaultType = new (
             new VehicleTypeId(Guid.Empty), "Default", "Default vehicle type");

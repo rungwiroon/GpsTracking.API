@@ -4,13 +4,16 @@ using Core.Domain.SeedWork;
 
 namespace Core.Domain.Identity.Events
 {
-    public class AccountDeactivated : IDomainEvent
+    public class TenantClosed : IDomainEvent
     {
         public TenantId TenantId { get; }
 
-        public AccountDeactivated(TenantId tenantId)
+        public DateTimeOffset ClosedAt { get; }
+
+        public TenantClosed(TenantId tenantId, DateTimeOffset closedAt)
         {
             TenantId = tenantId;
+            ClosedAt = closedAt;
         }
     }
 }

@@ -20,13 +20,13 @@ namespace Core.Domain.Identity
 
     public class Tenant : Entity, IAggregateRoot
     {
-        public TenantId Id { get; }
+        public TenantId Id { get; private set; }
 
         public bool IsActive { get; private set; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedAt { get; private set; }
 
-        public DateTimeOffset? DeactivedAt { get; set; }
+        public DateTimeOffset? DeactivedAt { get; private set; }
 
         private readonly List<UserAccount> userAccounts = new();
         public IReadOnlyCollection<UserAccount> UserAccounts => userAccounts.AsReadOnly();
@@ -37,70 +37,103 @@ namespace Core.Domain.Identity
         {
         }
 
-        private Tenant(int tenantId)
-        {
-            Id = new TenantId(tenantId);
-            CreatedAt = DateTimeOffset.UtcNow;
-        }
+        // private Tenant(int tenantId)
+        // {
+        //     Id = new TenantId(tenantId);
+        //     CreatedAt = DateTimeOffset.UtcNow;
+        // }
 
         public static (Tenant, UserAccount, Seq<IDomainEvent>) CreateAccount(int tenantNumber,
-            string userName, string password, string? email = null)
+            string userName, string passwordHash, string? email = null)
         {
-            var tenant = new Tenant(tenantNumber);
+            var tenant = new Tenant();
+            var createdEvent = new TenantCreated(tenant.Id, DateTimeOffset.UtcNow);
 
+            tenant.Apply(createdEvent);
+
+            var userAccountId = new UserAccountId();
             var userRole = UserRole.Owner;
+            var userAccountCreatedEvent = new UserAccountCreated(
+                    tenant.Id,
+                    userAccountId, userName, passwordHash,
+                    userRole.Id, userRole.Name,
+                    email);
 
-            var newUser = new UserAccount(
-                tenant, userName, password, userRole,
-                email);
+            tenant.Apply(userAccountCreatedEvent);
 
-            tenant.userAccounts.Add(newUser);
+            var userAccount = tenant.UserAccounts.Single(u => u.Id == userAccountId);
 
             var events = new Seq<IDomainEvent>()
             {
-                new TenantCreated(tenant.Id),
-                new UserAccountCreated(
-                    tenant.Id,
-                    newUser.Id, newUser.UserName, userRole.Id, userRole.Name)
+                createdEvent,
+                userAccountCreatedEvent
             };
 
-            return (tenant, newUser, events);
+            return (tenant, userAccount, events);
         }
 
-        public Seq<IDomainEvent> Deactivate()
+        public void Apply(TenantCreated @event)
+        {
+            Id = @event.TenantId;
+            CreatedAt = @event.CreatedAt;
+        }
+
+        public void Apply(UserAccountCreated @event)
+        {
+            var newUser = new UserAccount(
+                this, @event.UserName, @event.PasswordHash, 
+                @event.UserRoleId,
+                @event.Email, @event.Name, @event.Description);
+
+            userAccounts.Add(newUser);
+        }
+
+        public Seq<IDomainEvent> Suspend()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Seq<IDomainEvent> Close()
         {
             if (!IsActive)
                 return new SeqEmpty();
 
-            IsActive = false;
-            DeactivedAt = DateTimeOffset.UtcNow;
+            var @event = new TenantClosed(Id, DateTimeOffset.UtcNow);
 
-            return new() { new AccountDeactivated(Id) };
+            return new() { @event };
+        }
+
+        public void Apply(TenantClosed @event)
+        {
+            IsActive = false;
+            DeactivedAt = @event.ClosedAt;
         }
 
         public (UserAccount, Seq<IDomainEvent>) CreateUserAccount(
             UserAccountId issuedBy,
-            string userName, string password, UserRole role, 
+            string userName, string passwordHash, UserRole role, 
             string? email = null, string? name = null, string? descriptions = null)
         {
             var userAcc = userAccounts.Single(ua => ua.Id == issuedBy);
 
             if(userAcc.RoleId != UserRole.Owner.Id)
                 throw new InvalidOperationException("User doesn't have permission to create user account");
+            
+            var userAccountId = new UserAccountId();
+            var @event = new UserAccountCreated(Id,
+                        userAccountId, userName, passwordHash,
+                        role.Id, role.Name,
+                        email, name, descriptions);
 
-            var userAccount = new UserAccount(
-                    this, userName, password, role,
-                    email, name, descriptions);
+            Apply(@event);
 
-            userAccounts.Add(userAccount);
+            var userAccount = UserAccounts.Single(u => u.Id == userAccountId);
 
             return (
                 userAccount,
                 new()
                 {
-                    new UserAccountCreated(Id,
-                        userAccount.Id, userAccount.UserName,
-                        role.Id, role.Name)
+                    @event
                 });
         }
 
@@ -120,12 +153,12 @@ namespace Core.Domain.Identity
             return whoToEdit.ChangeInfo(name, descriptions);
         }
 
-        public Seq<IDomainEvent> ChangePassword()
+        public Seq<IDomainEvent> ChangePassword(string oldPasswordHash, string newPasswordHash)
         {
             throw new NotImplementedException();
         }
 
-        public Seq<IDomainEvent> DeleteUserAccount()
+        public Seq<IDomainEvent> CloseUserAccount()
         {
             throw new NotImplementedException();
         }

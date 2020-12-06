@@ -7,21 +7,24 @@ namespace Core.Domain.Vehicles.Events
     public class VehicleTypeChanged : IDomainEvent
     {
         public VehicleId VehicleId { get; }
-        public VehicleType OldType { get; }
-        public VehicleType NewType { get; }
+        public VehicleTypeId OldTypeId { get; }
 
-        public DateTimeOffset GlobalSequenceNumber { get; }
+        public VehicleTypeId NewTypeId { get; }
+        public string NewVehicleTypeName { get; }
+
+        public DateTimeOffset CreatedAt { get; }
 
         public VehicleTypeChanged(
             VehicleId vehicleId,
-            VehicleType oldType,
-            VehicleType newType)
+            VehicleTypeId oldVehicleTypeId,
+            VehicleTypeId newVehicleTypeId, 
+            string newVehicleTypeName)
         {
             VehicleId = vehicleId;
-            OldType = oldType;
-            NewType = newType;
-
-            GlobalSequenceNumber = DateTimeOffset.UtcNow;
+            OldTypeId = oldVehicleTypeId;
+            NewTypeId = newVehicleTypeId;
+            NewVehicleTypeName = newVehicleTypeName;
+            CreatedAt = DateTimeOffset.UtcNow;
         }
     }
 }

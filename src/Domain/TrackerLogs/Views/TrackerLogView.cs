@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Domain.TrackerLog.Views
+namespace Core.Domain.TrackerLogs.Views
 {
     public class TrackerLogView
     {

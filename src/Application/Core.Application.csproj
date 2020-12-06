@@ -7,4 +7,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Domain\Core.Domain.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Vehicles\Services\" />
+  </ItemGroup>
 </Project>

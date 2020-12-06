@@ -9,9 +9,12 @@ namespace Core.Domain.Identity.Events
     {
         public TenantId TenantId { get; }
 
-        public TenantCreated(TenantId tenantId)
+        public DateTimeOffset CreatedAt { get; }
+
+        public TenantCreated(TenantId tenantId, DateTimeOffset createdAt)
         {
             TenantId = tenantId;
+            CreatedAt = createdAt;
         }
     }
 }

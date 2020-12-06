@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
-using static LanguageExt.Prelude;
 
 namespace Core.Domain.Vehicles
 {
@@ -25,7 +24,7 @@ namespace Core.Domain.Vehicles
 
     public class Vehicle : Entity, IAggregateRoot
     {
-        public VehicleId Id { get; }
+        public VehicleId Id { get; private set; }
 
         public string LicensePlateId { get; private set; }
 
@@ -33,7 +32,7 @@ namespace Core.Domain.Vehicles
 
         public VehicleInfo? Info { get; }
 
-        public VehicleType Type { get; private set; }
+        public VehicleTypeId Type { get; private set; }
 
         public TenantId TenantId { get; private set; }
 
@@ -47,68 +46,110 @@ namespace Core.Domain.Vehicles
         private Vehicle() { }
 #pragma warning restore CS8618
 
-        internal Vehicle(
+        internal static (Vehicle, Seq<IDomainEvent>) CreateVehicle(
             string licensePlateId, TenantId tenantId, 
             VehicleType? vehicleType = null, string? name = null)
         {
-            Id = new();
+            var @event = new VehicleAdded(
+                    new VehicleId(),
+                    licensePlateId,
+                    (vehicleType ?? VehicleType.Default).Id,
+                    tenantId,
+                    name);
 
-            LicensePlateId = licensePlateId;
-            Type = vehicleType ?? VehicleType.Default;
-            Name = name;
-            TenantId = tenantId;
+            var vehicle = new Vehicle();
+            vehicle.Apply(@event);
 
-            CreatedAt = DateTimeOffset.UtcNow;
+            return (vehicle, new() { @event });
+        }
+
+        public void Apply(VehicleAdded @event)
+        {
+            Id = @event.VehicleId;
+
+            LicensePlateId = @event.LicensePlateId;
+            Type = @event.VehicleTypeId;
+            Name = @event.Name;
+            TenantId = @event.TenantId;
         }
 
         public Seq<IDomainEvent> InstallTracker(Tracker tracker)
         {
-            trackers.Add(tracker.Id);
+            var @event = new TrackerInstalled(
+                    Id, tracker.Id,
+                    tracker.SerialNumber,
+                    tracker.Info?.Brand, tracker.Info?.Model);
+
+            Apply(@event);
 
             return new()
             {
-                new TrackerInstalled(
-                    Id, tracker.Id,
-                    tracker.SerialNumber, 
-                    tracker.Info?.Brand, tracker.Info?.Model)
+                @event
             };
+        }
+
+        public void Apply(TrackerInstalled @event)
+        {
+            trackers.Add(@event.TrackerId);
         }
 
         public Seq<IDomainEvent> RemoveTracker(TrackerId trackerId)
         {
-            trackers.Remove(trackers.Single(t => t == trackerId));
+            var @event = new TrackerRemoved(Id, trackerId);
+
+            Apply(@event);
 
             return new()
             {
-                new TrackerRemoved(Id, trackerId)
+                @event
             };
+        }
+
+        public void Apply(TrackerRemoved @event)
+        {
+            trackers.RemoveAll(tid => tid == @event.TrackerId);
         }
 
         public Seq<IDomainEvent> ChangeLicensePlate(string newLicensePlateId)
         {
             var @event = new VehicleLicensePlateChanged(Id, this.LicensePlateId, newLicensePlateId);
 
-            LicensePlateId = newLicensePlateId;
+            Apply(@event);
 
             return new() { @event };
+        }
+
+        public void Apply(VehicleLicensePlateChanged @event)
+        {
+            LicensePlateId = @event.NewLicensePlateId;
         }
 
         public Seq<IDomainEvent> ChangeName(string newName)
         {
             var @event = new VehicleNameChanged(Id, this.Name, newName);
 
-            Name = newName;
+            Apply(@event);
 
             return new() { @event };
         }
 
+        public void Apply(VehicleNameChanged @event)
+        {
+            Name = @event.NewName;
+        }
+
         public Seq<IDomainEvent> ChangeVehicleType(VehicleType newVehicleType)
         {
-            var @event = new VehicleTypeChanged(Id, Type, newVehicleType);
+            var @event = new VehicleTypeChanged(Id, Type, newVehicleType.Id, newVehicleType.Name);
 
-            Type = newVehicleType;
+            Apply(@event);
 
             return new() { @event };
+        }
+
+        public void Apply(VehicleTypeChanged @event)
+        {
+            Type = @event.NewTypeId;
         }
 
         public Seq<IDomainEvent> Terminate()
@@ -122,6 +163,11 @@ namespace Core.Domain.Vehicles
             {
                 new VehicleTerminated(Id)
             };
+        }
+
+        public void Apply(VehicleTerminated @event)
+        {
+            TerminatedAt = DateTimeOffset.UtcNow;
         }
     }
 }
